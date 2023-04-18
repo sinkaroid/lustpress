@@ -21,19 +21,19 @@ export async function randomXvideos(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/xvideos/random
+     * curl -i https://lust.scathach.id/xvideos/random
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/xvideos/random")
+     * axios.get("https://lust.scathach.id/xvideos/random")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/xvideos/random") as resp:
+     *  async with session.get("https://lust.scathach.id/xvideos/random") as resp:
      *    print(await resp.json())
      */
     const resolve = await lust.fetchBody(c.XVIDEOS);

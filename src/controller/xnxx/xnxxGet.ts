@@ -22,19 +22,19 @@ export async function getXnxx(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/xnxx/get?id=video-17vah71a/makima_y_denji
+     * curl -i https://lust.scathach.id/xnxx/get?id=video-17vah71a/makima_y_denji
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/xnxx/get?id=video-17vah71a/makima_y_denji")
+     * axios.get("https://lust.scathach.id/xnxx/get?id=video-17vah71a/makima_y_denji")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/xnxx/get?id=video-17vah71a/makima_y_denji") as resp:
+     *  async with session.get("https://lust.scathach.id/xnxx/get?id=video-17vah71a/makima_y_denji") as resp:
      *    print(await resp.json())
      */
 

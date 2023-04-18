@@ -22,19 +22,19 @@ export async function relatedYouporn(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
+     * curl -i https://lust.scathach.id/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps")
+     * axios.get("https://lust.scathach.id/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps") as resp:
+     *  async with session.get("https://lust.scathach.id/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps") as resp:
      *    print(await resp.json())
      */
 

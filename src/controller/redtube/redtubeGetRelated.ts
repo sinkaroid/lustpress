@@ -17,19 +17,19 @@ export async function relatedRedtube(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/redtube/get?id=41698751
+     * curl -i https://lust.scathach.id/redtube/get?id=41698751
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/redtube/get?id=41698751")
+     * axios.get("https://lust.scathach.id/redtube/get?id=41698751")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/redtube/get?id=41698751") as resp:
+     *  async with session.get("https://lust.scathach.id/redtube/get?id=41698751") as resp:
      *    print(await resp.json())
      */
 

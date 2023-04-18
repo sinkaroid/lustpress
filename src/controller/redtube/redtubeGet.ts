@@ -23,19 +23,19 @@ export async function getRedtube(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/redtube/get?id=42763661
+     * curl -i https://lust.scathach.id/redtube/get?id=42763661
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/redtube/get?id=42763661")
+     * axios.get("https://lust.scathach.id/redtube/get?id=42763661")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/redtube/get?id=42763661") as resp:
+     *  async with session.get("https://lust.scathach.id/redtube/get?id=42763661") as resp:
      *    print(await resp.json())
      */
 

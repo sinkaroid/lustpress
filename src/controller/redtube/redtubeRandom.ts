@@ -25,19 +25,19 @@ export async function randomRedtube(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/redtube/random
+     * curl -i https://lust.scathach.id/redtube/random
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/redtube/random")
+     * axios.get("https://lust.scathach.id/redtube/random")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/redtube/random") as resp:
+     *  async with session.get("https://lust.scathach.id/redtube/random") as resp:
      *    print(await resp.json())
      */
     const resolve = await lust.fetchBody(c.REDTUBE);

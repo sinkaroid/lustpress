@@ -19,20 +19,20 @@ export async function searchXhamster(req: Request, res: Response) {
      *    HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/xhamster/search?key=milf
-     * curl -i https://lust.sinkaroid.org/xhamster/search?key=milf&page=2
+     * curl -i https://lust.scathach.id/xhamster/search?key=milf
+     * curl -i https://lust.scathach.id/xhamster/search?key=milf&page=2
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/xhamster/search?key=milf")
+     * axios.get("https://lust.scathach.id/xhamster/search?key=milf")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/xhamster/search?key=milf") as resp:
+     *  async with session.get("https://lust.scathach.id/xhamster/search?key=milf") as resp:
      *    print(await resp.json())
      */
 

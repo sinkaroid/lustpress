@@ -23,19 +23,19 @@ export async function randomXnxx(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/xnxx/random
+     * curl -i https://lust.scathach.id/xnxx/random
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/xnxx/random")
+     * axios.get("https://lust.scathach.id/xnxx/random")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/xnxx/random") as resp:
+     *  async with session.get("https://lust.scathach.id/xnxx/random") as resp:
      *    print(await resp.json())
      */
     const resolve = await lust.fetchBody("https://www.xnxx.com/search/random/random");

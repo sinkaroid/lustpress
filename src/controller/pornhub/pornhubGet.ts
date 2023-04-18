@@ -22,19 +22,19 @@ export async function getPornhub(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/pornhub/get?id=ph63c4e1dc48fe7
+     * curl -i https://lust.scathach.id/pornhub/get?id=ph63c4e1dc48fe7
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/pornhub/get?id=ph63c4e1dc48fe7")
+     * axios.get("https://lust.scathach.id/pornhub/get?id=ph63c4e1dc48fe7")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/pornhub/get?id=ph63c4e1dc48fe7") as resp:
+     *  async with session.get("https://lust.scathach.id/pornhub/get?id=ph63c4e1dc48fe7") as resp:
      *    print(await resp.json())
      */
 

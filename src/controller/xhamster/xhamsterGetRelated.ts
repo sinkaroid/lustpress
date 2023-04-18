@@ -22,19 +22,19 @@ export async function relatedXhamster(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
+     * curl -i https://lust.scathach.id/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx")
+     * axios.get("https://lust.scathach.id/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx") as resp:
+     *  async with session.get("https://lust.scathach.id/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx") as resp:
      *    print(await resp.json())
      */
 

@@ -23,19 +23,19 @@ export async function randomXhamster(req: Request, res: Response) {
      *   HTTP/1.1 400 Bad Request
      * 
      * @apiExample {curl} curl
-     * curl -i https://lust.sinkaroid.org/xhamster/random
+     * curl -i https://lust.scathach.id/xhamster/random
      * 
      * @apiExample {js} JS/TS
      * import axios from "axios"
      * 
-     * axios.get("https://lust.sinkaroid.org/xhamster/random")
+     * axios.get("https://lust.scathach.id/xhamster/random")
      * .then(res => console.log(res.data))
      * .catch(err => console.error(err))
      * 
      * @apiExample {python} Python
      * import aiohttp
      * async with aiohttp.ClientSession() as session:
-     *  async with session.get("https://lust.sinkaroid.org/xhamster/random") as resp:
+     *  async with session.get("https://lust.scathach.id/xhamster/random") as resp:
      *    print(await resp.json())
      */
     const resolve = await lust.fetchBody(`${c.XHAMSTER}/newest`);
