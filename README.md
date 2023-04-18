@@ -17,7 +17,7 @@ The motivation of this project is to bring you an actionable data related to por
 
 ---
 
-<a href="https://lust.scathach.id"><img align="right" src="https://cdn.discordapp.com/attachments/1046495201176334467/1097687929456963685/lp.png" width="320"></a>
+<a href="https://lust.scathach.id"><img align="right" src="https://cdn.discordapp.com/attachments/1046495201176334467/1097784363963383848/lp_copy.png" width="320"></a>
 
 - [Lustpress](#)
   - [The problem](#the-problem)
@@ -108,7 +108,7 @@ docker run -d \
   -p 3000:3000 \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/1.0.5 Node.js/16.9.1' \
+  -e USER_AGENT='lustpress/1.6.1 Node.js/16.9.1' \
   ghcr.io/sinkaroid/lustpress:latest
 ```
 
