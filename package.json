@@ -1,6 +1,6 @@
 {
   "name": "lustpress",
-  "version": "1.6.0-alpha",
+  "version": "1.6.1-alpha",
   "description": "RESTful and experimental API for PornHub and other porn sites, which official is lack even isn't exist.",
   "main": "build/src/index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "test:mock": "ts-node test/mock.ts",
     "start:prod": "npm run build && node build/src/index.js",
     "start:dev": "ts-node-dev src/index.ts",
+    "start:flyctl": "flyctl deploy",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix",
     "build:freshdoc": "rimraf docs && rimraf template && rimraf theme.zip",
