@@ -17,7 +17,8 @@ export async function scrapeContent(url: string) {
           .map((i, el) => {
             return {
               link: `${c.XNXX}${$(el).find("a").attr("href")}`,
-              id: $(el).find("a").attr("href"),
+              // remove first "/" and last "/"
+              id: $(el).find("a").attr("href")?.slice(1, -1),
               title: $(el).find("div.thumb-under").text().split("\n")
                 .map((el) => el.trim()).filter((el) => el !== "")[0],
               image: $(el).find("img").attr("data-src"),
@@ -25,8 +26,7 @@ export async function scrapeContent(url: string) {
                 .map((el) => el.trim()).filter((el) => el !== "")[2],
               rating: $(el).find("div.thumb-under").text().split("\n")
                 .map((el) => el.trim()).filter((el) => el !== "")[1],
-              video: null
-              
+              video: `${c.XNXX}/embedframe/${$(el).find("img").attr("data-videoid")}`
             };
           }).get();
       }

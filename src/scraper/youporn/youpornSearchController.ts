@@ -29,7 +29,7 @@ export async function scrapeContent(url: string) {
               title: lust.removeHtmlTagWithoutSpace(title),
               image: image,
               duration: this.dur[i],
-              views: null,
+              views: "None",
               video: `https://www.youporn.com/embed/${id}`,
             };
           }).get();

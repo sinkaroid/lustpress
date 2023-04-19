@@ -22,15 +22,16 @@ export async function scrapeContent(url: string) {
             //stop and replace everything after the last ];
             const badJson = video_related?.split("];")[0] + "]";
             const actualResult = JSON.parse(String(badJson));
+            //console.log(actualResult);
             const result = actualResult.map((el: any) => {
               return {
                 link: `${c.XNXX}${el.u}`,
-                id: el.u,
+                id: el.u.slice(1, -1),
                 title: el.t,
                 image: el.i,
                 duration: el.d,
                 views: `${el.n}, ${el.r}`,
-                video: null
+                video: `${c.XNXX}/embedframe/${el.id}`
               };
             });
             return result;

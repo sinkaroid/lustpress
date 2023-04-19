@@ -7,7 +7,6 @@ const lust = new LustPress();
 
 export async function scrapeContent(url: string) {
   try {
-    console.log(url);
     const res = await lust.fetchBody(url);
     const $ = load(res);
 
@@ -36,7 +35,7 @@ export async function scrapeContent(url: string) {
                 ? ""
                 : data[i].duration || "None",
               rating: null,
-              video: null
+              video: `${c.XVIDEOS}/embedframe/${$(el).find("img").attr("data-videoid")}`
             };
           }).get();
 

@@ -9,7 +9,6 @@ export async function scrapeContent(url: string) {
   try {
     const res = await lust.fetchBody(url);
     const $ = load(res);
-    console.log(url);
 
     class XvideosSearch {
       search: object[];
@@ -24,12 +23,12 @@ export async function scrapeContent(url: string) {
             const result = actualResult.map((el: any) => {
               return {
                 link: `${c.XVIDEOS}${el.u}`,
-                id: el.u,
+                id: el.u.slice(1, -1),
                 title: el.t,
                 image: el.i,
                 duration: el.d,
                 views: `${el.n}, ${el.r}`,
-                video: null
+                video: `${c.XVIDEOS}/embedframe/${el.id}`
               };
             });
             return result;

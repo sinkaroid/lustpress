@@ -1,5 +1,6 @@
 import { load } from "cheerio";
 import LustPress from "../../LustPress";
+import c from "../../utils/options";
 import { ISearchVideoData } from "../../interfaces";
 
 const lust = new LustPress();
@@ -33,7 +34,7 @@ export async function scrapeContent(url: string) {
               image: $(el).find("img").attr("src"),
               duration: duration[i],
               views: views[i],
-              video: $(el).attr("data-previewvideo"),
+              video: `${c.XHAMSTER}/embed/${link?.split("-").pop()}`
             };
           }).get();    
       }

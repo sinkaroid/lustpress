@@ -25,6 +25,7 @@ export async function scrapeContent(url: string) {
       models: string[];
       thumbnail: string;
       bigimg: string;
+      embed: string;
       constructor() {
         this.link = $("meta[property='og:url']").attr("content") || "None";
         this.id = this.link.split("/")[3] + "/" + this.link.split("/")[4] || "None";
@@ -60,7 +61,8 @@ export async function scrapeContent(url: string) {
           }
           ).get();
         this.models = this.models.map((el) => el.split("/")[2]);
-
+        this.embed = $("input#copy-video-embed").attr("value") || "None";
+        this.embed = this.embed.split("iframe")[1].split(" ")[1].replace(/src=/g, "").replace(/"/g, "") || "None";
       }
     }
     
@@ -81,7 +83,7 @@ export async function scrapeContent(url: string) {
         tags: xv.tags,
       },
       source: xv.link,
-      assets: lust.removeAllSingleQuoteOnArray([xv.thumbnail, xv.bigimg, xv.video])
+      assets: lust.removeAllSingleQuoteOnArray([xv.embed, xv.thumbnail, xv.bigimg, xv.video])
     };
     return data;
     

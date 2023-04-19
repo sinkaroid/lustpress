@@ -40,6 +40,7 @@ class LustPress {
       return res.body;
     } else {
       console.log("Fetching from source");
+      url = url.replace(/\/\//g, "/");
       const res = await p({ 
         url: url,
         "headers": {
