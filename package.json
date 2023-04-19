@@ -1,6 +1,6 @@
 {
   "name": "lustpress",
-  "version": "1.6.2-alpha",
+  "version": "1.6.3-alpha",
   "description": "RESTful and experimental API for PornHub and other porn sites, which official is lack even isn't exist.",
   "main": "build/src/index.js",
   "scripts": {
