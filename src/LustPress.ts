@@ -72,6 +72,7 @@ class LustPress {
   removeHtmlTagWithoutSpace(str: string): string {
     str = str.replace(/(\r\n|\n|\r|\t)/gm, "");
     str = str.replace(/\\/g, "");
+    str = str.replace(/\s+/g, " ");
     return str.trim();
   }
 
