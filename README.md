@@ -71,7 +71,7 @@ Don't make it long, make it short, all processed through single rest
 
 ## Prerequisites
 <table>
-	<td><b>NOTE:</b> NodeJS 14.x or higher</td>
+	<td><b>NOTE:</b> NodeJS 16.x or higher</td>
 </table>
 
 To handle several requests from each website, You will also need [Redis](https://redis.io/) for persistent caching, free tier is available on [Redis Labs](https://redislabs.com/), You can also choose another adapters as we using [keyv](https://github.com/jaredwray/keyv) Key-value storage with support for multiple backends. When you choosing your own adapter, all data must be stored with `<Buffer>` type.
