@@ -6,7 +6,6 @@ const lust = new LustPress();
 
 export async function scrapeContent(url: string) {
   try {
-    console.log(url);
     const resolve = await lust.fetchBody(url);
     const $ = load(resolve);
 
@@ -27,6 +26,7 @@ export async function scrapeContent(url: string) {
       thumbnail: string;
       bigimg: string;
       video: string;
+      embed: string;
       constructor() {
         const thumb = $("script")
           .map((i, el) => {
@@ -69,6 +69,8 @@ export async function scrapeContent(url: string) {
           .map((i, el) => {
             return $(el).text();
           }).get();
+        this.embed = $("input#copy-video-embed").attr("value") || "None";
+        this.embed = this.embed.split("iframe")[1].split(" ")[1].replace(/src=/g, "").replace(/"/g, "") || "None";
 
       }
     }
@@ -91,7 +93,7 @@ export async function scrapeContent(url: string) {
         tags: x.tags.filter((el) => el !== "Edit tags and models")
       },
       source: x.link,
-      assets: lust.removeAllSingleQuoteOnArray([x.thumbnail, x.bigimg, x.video])
+      assets: lust.removeAllSingleQuoteOnArray([x.embed, x.thumbnail, x.bigimg, x.video])
     };
     return data;
     
