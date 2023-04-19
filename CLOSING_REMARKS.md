@@ -19,4 +19,4 @@ Core dependencies:
 # Alternative-links
 Just in case if https://lust.scathach.id down, here some alternative deployment
 
-- TBA
+- https://lustpress.cyclic.app
