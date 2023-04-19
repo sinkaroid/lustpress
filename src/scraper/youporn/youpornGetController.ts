@@ -19,7 +19,7 @@ export async function scrapeContent(url: string) {
       rating: string;
       publish: string;
       upVote: string;
-      downVote: null;
+      downVote: string;
       video: string;
       tags: string[];
       models: string[];
@@ -33,7 +33,7 @@ export async function scrapeContent(url: string) {
         this.rating = $("div.feature").find("span").text().replace(/[^0-9.,%]/g, "") || "0";
         this.publish = $("div.video-uploaded").find("span").text() || "None";
         this.upVote = this.views;
-        this.downVote = null;
+        this.downVote = "None";
         this.video = `https://www.youporn.com/embed/${this.id}`;
         this.tags = $("a[data-espnode='category_tag'], a[data-espnode='porntag_tag']")
           .map((i, el) => {
