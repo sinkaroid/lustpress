@@ -18,7 +18,7 @@ export async function scrapeContent(url: string) {
             const views = $(el).text();
             return views;
           }).get();
-        const duration = $("span[data-role='video-duration']")
+        const duration = $("div[data-role='video-duration']")
           .map((i, el) => {
             const duration = $(el).text();
             return duration;
