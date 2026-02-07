@@ -17,29 +17,32 @@ export async function scrapeContent(url: string) {
           .map((i, el) => {
             const views = $(el).text();
             return views;
-          }).get();
+          })
+          .get();
         const duration = $("span[data-role='video-duration']")
           .map((i, el) => {
             const duration = $(el).text();
             return duration;
-          }).get();
+          })
+          .get();
         this.search = $("a.video-thumb__image-container")
           .map((i, el) => {
             const link = $(el).attr("href");
 
             return {
               link: `${link}`,
-              id: link?.split("/")[3] + "/" + link?.split("/")[4],
+              id: link?.split("/")[4],
               title: $(el).find("img").attr("alt"),
               image: $(el).find("img").attr("src"),
               duration: duration[i],
               views: views[i],
-              video: `${c.XHAMSTER}/embed/${link?.split("-").pop()}`
+              video: `${c.XHAMSTER}/embed/${link?.split("-").pop()}`,
             };
-          }).get();    
+          })
+          .get();
       }
     }
-    
+
     const xh = new XhamsterSearch();
     if (xh.search.length === 0) throw Error("No result found");
     const data = xh.search as unknown as string[];
@@ -49,7 +52,6 @@ export async function scrapeContent(url: string) {
       source: url,
     };
     return result;
-
   } catch (err) {
     const e = err as Error;
     throw Error(e.message);

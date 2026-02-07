@@ -3,13 +3,14 @@ export interface IVideoData {
     data: {
         title: string;
         id: string;
-        image: string;
+        image?: string;
         duration: string;
         views: string;
-        rating: string;
+        rating?: string;
         uploaded: string;
         upvoted: string | null;
         downvoted: string | null;
+        channel?: string;
         models: string[];
         tags: string[];
     };
@@ -22,6 +23,19 @@ export interface ISearchVideoData {
     data: string[];
     source: string;
 }
+
+export interface ISearchItem {
+  link: string;
+  id: string;
+  title?: string;
+  image?: string;
+  duration?: string;
+  rating?: string;
+  views?: string;
+  uploader?: string;
+  video?: string;
+}
+
 
 export interface MaybeError {
     message: string;

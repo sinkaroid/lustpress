@@ -68,6 +68,8 @@ Don't make it long, make it short, all processed through single rest
 | `xvideos`   | [![xvideos](https://github.com/sinkaroid/lustpress/workflows/Xvideos%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/xvideos.yml)       | `Yes`  | `Yes`     | `Yes`      | `Yes`     |
 | `xhamster` | [![xhamster](https://github.com/sinkaroid/lustpress/workflows/Xhamster%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/xhamster.yml) | `Yes`  | `Yes`      | `Yes`      | `Yes`     |
 | `youporn`     | [![youporn](https://github.com/sinkaroid/lustpress/workflows/Youporn%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/youporn.yml)            | `Yes`  | `Yes`     | `Yes`     | `Yes`     |
+| `eporner`     | — | `Yes` | `Yes` | `Yes` | `Yes` |
+| `txxx`        | — | `Yes` | `Yes` | `Yes` | `Yes` |
 
 ## Prerequisites
 <table>

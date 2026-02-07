@@ -9,7 +9,7 @@ export async function scrapeContent(url: string) {
     const resolve = await lust.fetchBody(url);
     const $ = load(resolve);
 
-    class PornHub { 
+    class PornHub {
       link: string;
       id: string;
       title: string;
@@ -29,28 +29,29 @@ export async function scrapeContent(url: string) {
         this.title = $("meta[property='og:title']").attr("content") || "None";
         this.image = $("meta[property='og:image']").attr("content") || "None";
         //get <meta property="video:duration" content="
-        this.duration = $("meta[property='video:duration']").attr("content") || "0";
+        this.duration =
+          $("meta[property='video:duration']").attr("content") || "0";
         this.views = $("div.views > span.count").text() || "None";
         this.rating = $("div.ratingPercent > span.percent").text() || "None";
         this.videoInfo = $("div.videoInfo").text() || "None";
         this.upVote = $("span.votesUp").attr("data-rating") || "None";
         this.downVote = $("span.votesDown").attr("data-rating") || "None";
-        this.video = $("meta[property='og:video:url']").attr("content") || "None";
+        this.video =
+          $("meta[property='og:video:url']").attr("content") || "None";
         this.tags = $("div.video-info-row")
           .find("a")
           .map((i, el) => {
             return $(el).text();
-          }).get();
+          })
+          .get();
         this.tags.shift();
         this.tags = this.tags.map((el) => lust.removeHtmlTagWithoutSpace(el));
-        this.models = $("div.pornstarsWrapper.js-pornstarsWrapper")
-          .find("a")
-          .map((i, el) => {
-            return $(el).attr("data-mxptext");
-          }).get();
+        this.models = $("div.pornstarsWrapper.js-pornstarsWrapper a")
+          .map((i, el) => $(el).text().trim())
+          .get();
       }
     }
-    
+
     const ph = new PornHub();
     const data: IVideoData = {
       success: true,
@@ -65,10 +66,10 @@ export async function scrapeContent(url: string) {
         upvoted: ph.upVote,
         downvoted: ph.downVote,
         models: ph.models,
-        tags: ph.tags.filter((el) => el !== "Suggest" && el !== " Suggest")
+        tags: ph.tags.filter((el) => el !== "Suggest" && el !== " Suggest"),
       },
       source: ph.link,
-      assets: [ph.video, ph.image]
+      assets: [ph.video, ph.image],
     };
     return data;
   } catch (err) {
