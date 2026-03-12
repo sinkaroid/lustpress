@@ -1,6 +1,179 @@
 define({ "api": [
   {
     "type": "get",
+    "url": "/eporner/get?id=:id",
+    "title": "Get eporner",
+    "name": "Get_eporner",
+    "group": "eporner",
+    "description": "<p>Get a eporner video based on id</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Video ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\nHTTP/1.1 400 Bad Request",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "curl",
+        "content": "curl -i https://lust.scathach.id/eporner/get?id=ibvqvezXzcs",
+        "type": "curl"
+      },
+      {
+        "title": "JS/TS",
+        "content": "import axios from \"axios\"\n\naxios.get(\"https://lust.scathach.id/eporner/get?id=ibvqvezXzcs\")\n.then(res => console.log(res.data))\n.catch(err => console.error(err))",
+        "type": "js"
+      },
+      {
+        "title": "Python",
+        "content": "import aiohttp\nasync with aiohttp.ClientSession() as session:\n async with session.get(\"https://lust.scathach.id/eporner/get?id=ibvqvezXzcs\") as resp:\n   print(await resp.json())",
+        "type": "python"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/controller/eporner/epornerGet.ts",
+    "groupTitle": "eporner",
+    "sampleRequest": [
+      {
+        "url": "https://lust.scathach.id/eporner/get?id=:id"
+      }
+    ]
+  },
+  {
+    "type": "get",
+    "url": "/eporner/random",
+    "title": "Get random eporner",
+    "name": "Get_random_eporner",
+    "group": "eporner",
+    "description": "<p>Get a random eporner video</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Video ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\nHTTP/1.1 400 Bad Request",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "curl",
+        "content": "curl -i https://lust.scathach.id/eporner/random",
+        "type": "curl"
+      },
+      {
+        "title": "JS/TS",
+        "content": "import axios from \"axios\"\n\naxios.get(\"https://lust.scathach.id/eporner/random\")\n.then(res => console.log(res.data))\n.catch(err => console.error(err))",
+        "type": "js"
+      },
+      {
+        "title": "Python",
+        "content": "import aiohttp\nasync with aiohttp.ClientSession() as session:\n async with session.get(\"https://lust.scathach.id/eporner/random\") as resp:\n   print(await resp.json())",
+        "type": "python"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/controller/eporner/epornerRandom.ts",
+    "groupTitle": "eporner",
+    "sampleRequest": [
+      {
+        "url": "https://lust.scathach.id/eporner/random"
+      }
+    ]
+  },
+  {
+    "type": "get",
+    "url": "/eporner/search",
+    "title": "Search eporner videos",
+    "name": "Search_eporner",
+    "group": "eporner",
+    "description": "<p>Search eporner videos</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "key",
+            "description": "<p>Keyword to search</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "defaultValue": "1",
+            "description": "<p>Page number</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\nHTTP/1.1 400 Bad Request",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "curl",
+        "content": "curl -i https://lust.scathach.id/eporner/search?key=milf\ncurl -i https://lust.scathach.id/eporner/search?key=milf&page=2",
+        "type": "curl"
+      },
+      {
+        "title": "JS/TS",
+        "content": "import axios from \"axios\"\n\naxios.get(\"https://lust.scathach.id/eporner/search?key=milf\")\n.then(res => console.log(res.data))\n.catch(err => console.error(err))",
+        "type": "js"
+      },
+      {
+        "title": "Python",
+        "content": "import aiohttp\nasync with aiohttp.ClientSession() as session:\n async with session.get(\"https://lust.scathach.id/eporner/search?key=milf\") as resp:\n   print(await resp.json())",
+        "type": "python"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "src/controller/eporner/epornerSearch.ts",
+    "groupTitle": "eporner",
+    "sampleRequest": [
+      {
+        "url": "https://lust.scathach.id/eporner/search"
+      }
+    ]
+  },
+  {
+    "type": "get",
     "url": "/pornhub/get?id=:id",
     "title": "Get Pornhub",
     "name": "Get_pornhub",
@@ -440,10 +613,10 @@ define({ "api": [
   {
     "type": "get",
     "url": "/xhamster/random",
-    "title": "Get random xhamster",
+    "title": "Get random xhamster video",
     "name": "Get_random_xhamster",
     "group": "xhamster",
-    "description": "<p>Get a random xhamster video</p>",
+    "description": "<p>Get a random xhamster video from the list of newest videos.</p>",
     "success": {
       "examples": [
         {
