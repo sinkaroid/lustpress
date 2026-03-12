@@ -2,6 +2,19 @@ import cors from "cors";
 import { Router } from "express";
 import { slow, limiter } from "../utils/limit-options";
 
+
+// EPorner
+import { getEporner } from "../controller/eporner/epornerGet";
+import { searchEporner } from "../controller/eporner/epornerSearch";
+import { relatedEporner } from "../controller/eporner/epornerGetRelated";
+import { randomEporner } from "../controller/eporner/epornerRandom";
+
+// TXXX
+import { getTxxx } from "../controller/txxx/txxxGet";
+import { searchTxxx } from "../controller/txxx/txxxSearch";
+import { relatedTxxx } from "../controller/txxx/txxxGetRelated";
+import { randomTxxx } from "../controller/txxx/txxxRandom";
+
 // PornHub
 import { getPornhub } from "../controller/pornhub/pornhubGet";
 import { searchPornhub } from "../controller/pornhub/pornhubSearch";
@@ -65,6 +78,14 @@ function scrapeRoutes() {
   router.get("/youporn/search", cors(), slow, limiter, searchYouporn);
   router.get("/youporn/related", cors(), slow, limiter, relatedYouporn);
   router.get("/youporn/random", cors(), slow, limiter, randomYouporn);
+  router.get("/eporner/get", cors(), slow, limiter, getEporner);
+  router.get("/eporner/search", cors(), slow, limiter, searchEporner);
+  router.get("/eporner/related", cors(), slow, limiter, relatedEporner);
+  router.get("/eporner/random", cors(), slow, limiter, randomEporner);
+  router.get("/txxx/get", cors(), slow, limiter, getTxxx);
+  router.get("/txxx/search", cors(), slow, limiter, searchTxxx);
+  router.get("/txxx/related", cors(), slow, limiter, relatedTxxx);
+  router.get("/txxx/random", cors(), slow, limiter, randomTxxx);
   
   return router;
 }

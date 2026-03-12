@@ -6,78 +6,106 @@ const lust = new LustPress();
 
 export async function scrapeContent(url: string) {
   try {
-    const resolve = await lust.fetchBody(url);
-    const $ = load(resolve);
+    const buffer = await lust.fetchBody(url);
+    const $ = load(buffer.toString("utf8"));
 
-    class Xhamster { 
+    const raw = $("#initials-script").html();
+    const initials = raw
+      ? JSON.parse(
+          raw.replace(/^window\.initials\s*=\s*/, "").replace(/;$/, ""),
+        )
+      : null;
+
+    class Xhamster {
       link: string;
       id: string;
       title: string;
       image: string;
-      duration: any;
+      duration: string;
       views: string;
       rating: string;
-      publish: string;
       upVote: string;
       downVote: string;
-      video: string;
+      publish: string;
       tags: string[];
       models: string[];
+      video: string;
+
       constructor() {
         this.link = $("link[rel='canonical']").attr("href") || "None";
-        this.id = this.link.split("/")[3] + "/" + this.link.split("/")[4] || "None";
+        this.id = this.link.split("/")[4] || "None";
         this.title = $("meta[property='og:title']").attr("content") || "None";
-        this.image = $("meta[property='og:image']").attr("content") || "None"; 
-        this.duration = $("script#initials-script").html() || "None";
-        //remove window.initials={ and };
-        this.duration = this.duration.replace("window.initials=", "");
-        this.duration = this.duration.replace(/;/g, "");
-        this.duration = JSON.parse(this.duration);
-        this.duration = this.duration.videoModel.duration || "None";
-        this.views = $("div.header-icons").find("span").first().text() || "None";
-        this.rating = $("div.header-icons").find("span").eq(1).text() || "None";
-        this.publish = $("div.entity-info-container__date").attr("data-tooltip") || "None";
-        this.upVote = $("div.rb-new__info").text().split("/")[0].trim() || "None";
-        this.downVote = $("div.rb-new__info").text().split("/")[1].trim() || "None";
-        this.video = "https://xheve2.com/embed/" + this.link.split("-").pop() || "None";
-        this.tags = $("a.video-tag")
-          .map((i, el) => {
-            return $(el).text();
-          }).get();
-        this.tags = this.tags.map((el) => lust.removeHtmlTagWithoutSpace(el));
-        this.models = $("a.video-tag")
-          .map((i, el) => {
-            return $(el).attr("href");
-          }
-          ).get();
-        this.models = this.models.filter((el) => el.startsWith("https://xheve2.com/pornstars/"));
-        this.models = this.models.map((el) => el.replace("https://xheve2.com/pornstars/", ""));
+        this.image = $("meta[property='og:image']").attr("content") || "None";
+
+        // defaults
+        this.duration = "None";
+        this.views = "None";
+
+        const scripts = $("script")
+          .map((i, el) => $(el).html())
+          .get()
+          .filter(Boolean);
+
+        const videoScript = scripts.find(
+          (s) => s.includes('"videoModel"') && s.includes('"duration"'),
+        );
+
+        if (videoScript) {
+          const durMatch = videoScript.match(/"duration"\s*:\s*(\d+)/);
+          if (durMatch) this.duration = durMatch[1];
+
+          const viewMatch = videoScript.match(/"views"\s*:\s*(\d+)/);
+          if (viewMatch) this.views = viewMatch[1];
+        }
+
+        this.rating =
+          initials?.ratingComponent?.ratingModel?.value?.toString() || "None";
+        this.upVote =
+          initials?.ratingComponent?.ratingModel?.likes?.toString() || "None";
+        this.downVote =
+          initials?.ratingComponent?.ratingModel?.dislikes?.toString() ||
+          "None";
+
+        this.publish =
+          $("div.entity-info-container__date").attr("data-tooltip") || "None";
+
+        this.tags =
+          initials?.videoTagsComponent?.tags
+            ?.filter((t: any) => t.isTag)
+            .map((t: any) => t.name) || [];
+
+        this.models =
+          initials?.videoTagsComponent?.tags
+            ?.filter((t: any) => t.isPornstar)
+            .map((t: any) => t.name) || [];
+
+        const embedId = this.link.split("-").pop()?.replace("/", "");
+        this.video = embedId ? `https://xhamster.com/embed/${embedId}` : "None";
       }
     }
-    
+
     const xh = new Xhamster();
-    const data: IVideoData = {
+
+    return {
       success: true,
       data: {
         title: lust.removeHtmlTagWithoutSpace(xh.title),
         id: xh.id,
         image: xh.image,
-        duration: lust.secondToMinute(Number(xh.duration)),
+        duration: xh.duration,
         views: xh.views,
         rating: xh.rating,
         uploaded: xh.publish,
         upvoted: xh.upVote,
         downvoted: xh.downVote,
         models: xh.models,
-        tags: xh.tags
+        tags: xh.tags,
       },
       source: xh.link,
-      assets: [xh.video, xh.image]
-    };
-    return data;
-    
+      assets: [xh.video, xh.image],
+    } satisfies IVideoData;
   } catch (err) {
     const e = err as Error;
-    throw Error(e.message);
+    throw new Error(e.message);
   }
 }
