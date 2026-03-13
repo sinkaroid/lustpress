@@ -64,7 +64,7 @@ export async function scrapeContent(url: string) {
           .get();
 
         this.search = cards
-          .map((i, el) => {
+          .map((i) => {
             return {
               link: `${c.YOUPORN}${this.links[i]}`,
               id: this.ids[i],

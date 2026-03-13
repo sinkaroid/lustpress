@@ -4,9 +4,6 @@ import c from "../../utils/options";
 import { logger } from "../../utils/logger";
 import { maybeError } from "../../utils/modifier";
 import { Request, Response } from "express";
-import LustPress from "../../LustPress";
-
-const lust = new LustPress();
 
 export async function randomEporner(req: Request, res: Response) {
   /**

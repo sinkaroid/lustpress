@@ -14,7 +14,7 @@ function getRelatedApiUrl(videoId: string, page = 1, count = 50): string {
   const thousand = Math.floor(id / 1_000) * 1_000;
 
   return (
-    `https://txxx.com/api/json/videos_related2/` +
+    "https://txxx.com/api/json/videos_related2/" +
     `432000/${count}/${million}/${thousand}/${id}.all.${page}.json`
   );
 }

@@ -12,8 +12,8 @@ export async function scrapeContent(url: string) {
     const raw = $("#initials-script").html();
     const initials = raw
       ? JSON.parse(
-          raw.replace(/^window\.initials\s*=\s*/, "").replace(/;$/, ""),
-        )
+        raw.replace(/^window\.initials\s*=\s*/, "").replace(/;$/, ""),
+      )
       : null;
 
     class Xhamster {
@@ -47,7 +47,7 @@ export async function scrapeContent(url: string) {
           .filter(Boolean);
 
         const videoScript = scripts.find(
-          (s) => s.includes('"videoModel"') && s.includes('"duration"'),
+          (s) => s.includes("\"videoModel\"") && s.includes("\"duration\""),
         );
 
         if (videoScript) {
