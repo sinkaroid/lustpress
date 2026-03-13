@@ -1,5 +1,5 @@
 <div align="center">
-<a href="https://lust.scathach.id"><img width="500" src="https://cdn.discordapp.com/attachments/1046495201176334467/1097683154959077496/lust-node_1.png" alt="lustpress"></a>
+<a href="http://localhost:3000/"><img width="500" src="resources/project/images/lustpress-node_1.png" alt="lustpress"></a>
 
 <h4 align="center">RESTful and experimental API for the PornHub and other adult videos</h4>
 <p align="center">
@@ -17,7 +17,7 @@ The motivation of this project is to bring you an actionable data related to por
 
 ---
 
-<a href="https://lust.scathach.id"><img align="right" src="https://cdn.discordapp.com/attachments/1046495201176334467/1097784363963383848/lp_copy.png" width="320"></a>
+<a href="http://localhost:3000/"><img align="right" src="resources/project/images/bnnuy.png" width="320"></a>
 
 - [Lustpress](#)
   - [The problem](#the-problem)
@@ -38,6 +38,7 @@ The motivation of this project is to bring you an actionable data related to por
   - [Client libraries / Wrappers](#client-libraries--wrappers)
   - [Acknowledgements](#acknowledgements)
   - [Legal](#legal)
+  - [Discontinued playground](#frequently-asked-questions)
 
 
 ## The problem
@@ -46,7 +47,7 @@ Instead making lot of abstraction and enumerating them manually, You can rely on
 
 ## The solution
 Don't make it long, make it short, all processed through single rest
-<a href="https://sinkaroid.github.io/lustpress"><img src="https://cdn.discordapp.com/attachments/938964058735013899/1097780378061766697/glow.png" width="800"></a>
+<a href="https://sinkaroid.github.io/lustpress"><img src="resources/project/images/coverage.png" width="800"></a>
 
 ## Features
 
@@ -95,7 +96,7 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # you must identify your origin, if not set it will use default
-USER_AGENT = "lustpress/1.6.1 Node.js/16.9.1"
+USER_AGENT = "lustpress/8.0.1 Node.js/22.22.0"
 ```
 
 ### Docker
@@ -110,7 +111,7 @@ docker run -d \
   -p 3000:3000 \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/1.6.1 Node.js/16.9.1' \
+  -e USER_AGENT='lustpress/8.0.1 Node.js/22.22.0' \
   ghcr.io/sinkaroid/lustpress:latest
 ```
 
@@ -156,10 +157,10 @@ The missing piece of pornhub.com - https://sinkaroid.github.io/lustpress/#api-po
   - <u>sort parameters on search</u>
     - "mr", "mv", "tr", "lg"
   - Example
-    - https://lust.scathach.id/pornhub/get?id=ph63c4e1dc48fe7
-    - https://lust.scathach.id/pornhub/search?key=milf&page=2&sort=mr
-    - https://lust.scathach.id/pornhub/related?id=ph63c4e1dc48fe7
-    - https://lust.scathach.id/pornhub/random
+    - http://localhost:3000/pornhub/get?id=ph63c4e1dc48fe7
+    - http://localhost:3000/pornhub/search?key=milf&page=2&sort=mr
+    - http://localhost:3000/pornhub/related?id=ph63c4e1dc48fe7
+    - http://localhost:3000/pornhub/random
 
 ### Xnxx
 The missing piece of xnxx.com - https://sinkaroid.github.io/lustpress/#api-xnxx
@@ -171,10 +172,10 @@ The missing piece of xnxx.com - https://sinkaroid.github.io/lustpress/#api-xnxx
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - https://lust.scathach.id/xnxx/get?id=video-17vah71a/makima_y_denji
-    - https://lust.scathach.id/xnxx/search?key=bbc&page=2
-    - https://lust.scathach.id/xnxx/related?id=video-17vah71a/makima_y_denji
-    - https://lust.scathach.id/xnxx/random
+    - http://localhost:3000/xnxx/get?id=video-17vah71a/makima_y_denji
+    - http://localhost:3000/xnxx/search?key=bbc&page=2
+    - http://localhost:3000/xnxx/related?id=video-17vah71a/makima_y_denji
+    - http://localhost:3000/xnxx/random
 
 ### RedTube
 The missing piece of redtube.com - https://sinkaroid.github.io/lustpress/#api-redtube
@@ -186,10 +187,10 @@ The missing piece of redtube.com - https://sinkaroid.github.io/lustpress/#api-re
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - https://lust.scathach.id/redtube/get?id=42763661
-    - https://lust.scathach.id/redtube/search?key=asian&page=2
-    - https://lust.scathach.id/redtube/related?id=42763661
-    - https://lust.scathach.id/redtube/random
+    - http://localhost:3000/redtube/get?id=42763661
+    - http://localhost:3000/redtube/search?key=asian&page=2
+    - http://localhost:3000/redtube/related?id=42763661
+    - http://localhost:3000/redtube/random
 
 ### Xvideos
 The missing piece of xvideos.com - https://sinkaroid.github.io/lustpress/#api-xvideos
@@ -201,10 +202,10 @@ The missing piece of xvideos.com - https://sinkaroid.github.io/lustpress/#api-xv
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - https://lust.scathach.id/xvideos/get?id=video73564387/cute_hentai_maid_with_pink_hair_fucking_uncensored_
-    - https://lust.scathach.id/xvideos/search?key=hentai&page=2
-    - https://lust.scathach.id/xvideos/related?id=video73564387/cute_hentai_maid_with_pink_hair_fucking_uncensored_
-    - https://lust.scathach.id/xvideos/random
+    - http://localhost:3000/xvideos/get?id=video73564387/cute_hentai_maid_with_pink_hair_fucking_uncensored_
+    - http://localhost:3000/xvideos/search?key=hentai&page=2
+    - http://localhost:3000/xvideos/related?id=video73564387/cute_hentai_maid_with_pink_hair_fucking_uncensored_
+    - http://localhost:3000/xvideos/random
 
 ### Xhamster
 The missing piece of xhamster.com - https://sinkaroid.github.io/lustpress/#api-xhamster
@@ -216,10 +217,10 @@ The missing piece of xhamster.com - https://sinkaroid.github.io/lustpress/#api-x
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - https://lust.scathach.id/xhamster/get?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
-    - https://lust.scathach.id/xhamster/search?key=arab&page=2
-    - https://lust.scathach.id/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
-    - https://lust.scathach.id/xhamster/random
+    - http://localhost:3000/xhamster/get?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
+    - http://localhost:3000/xhamster/search?key=arab&page=2
+    - http://localhost:3000/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
+    - http://localhost:3000/xhamster/random
 
 ### YouPorn
 The missing piece of youporn.com - https://sinkaroid.github.io/lustpress/#api-youporn
@@ -231,22 +232,40 @@ The missing piece of youporn.com - https://sinkaroid.github.io/lustpress/#api-yo
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - https://lust.scathach.id/youporn/get?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
-    - https://lust.scathach.id/youporn/search?key=teen&page=2
-    - https://lust.scathach.id/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
-    - https://lust.scathach.id/youporn/random
+    - http://localhost:3000/youporn/get?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
+    - http://localhost:3000/youporn/search?key=teen&page=2
+    - http://localhost:3000/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
+    - http://localhost:3000/youporn/random
 
-### JavHD
-The missing piece of javhd.com - TBA
-- `/javhd` : javhd api
-  - **get**, takes parameters : TBD
-  - **search**, takes parameters : TBD
-  - **related**, takes parameters : TBD
+### Eporner
+https://sinkaroid.github.io/lustpress/#api-eporner
+- `/eporner` : eporner api
+  - **get**, takes parameters : `id`
+  - **search**, takes parameters : `key`, `?page`
+  - **related**, takes parameters : `id`
   - **random**
   - <u>sort parameters on search</u>
     - TBD
   - Example
+    - http://localhost:3000/eporner/get?id=ibvqvezXzcs
+    - http://localhost:3000/eporner/search?key=makima&page=2
+    - http://localhost:3000/eporner/related?id=GPOFlSQLukS
+    - http://localhost:3000/eporner/random
+
+### Txxx
+https://sinkaroid.github.io/lustpress/#api-txxx
+- `/txxx` : txxx api
+  - **get**, takes parameters : `id`
+  - **search**, takes parameters : `key`, `?page`
+  - **related**, takes parameters : `id`
+  - **random**
+  - <u>sort parameters on search</u>
     - TBD
+  - Example
+    - http://localhost:3000/txxx/get?id=5309183
+    - http://localhost:3000/txxx/search?key=femboy&page=1
+    - http://localhost:3000/txxx/related?id=7794034
+    - http://localhost:3000/txxx/random
 
 
 ## Status response
@@ -258,10 +277,12 @@ The missing piece of javhd.com - TBA
 
 ## Frequently asked questions 
 **Q: The website response is slow**  
-> That's unfortunate, This repository was opensource already, You can host and deploy Lustpress with your own instance. Any fixes and improvements will updating to this repo.
+> That's unfortunate, this repository was opensource already, You can host and deploy Lustpress with your own instance. Any fixes and improvements will updating to this repo.  
 
-**Q: I dont want to host my own instance**   
-> That's unfortunate, Hit the "Sponsor this project" button, any kind of donations will helps me to funding the development.
+> **March 11, 2026**:
+We have discontinued providing public APIs and playground services due to ongoing abuse and excessive usage.
+To continue using Lustpress, please deploy and run your own self-hosted instance.
+
 
 ## Pronunciation
 `en_US` • **/lʌstˈprɛs/** — "lust" stand for this project and "press" for express.
