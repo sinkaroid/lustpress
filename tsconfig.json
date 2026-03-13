@@ -18,7 +18,8 @@
     "strict": true,
     "strictBindCallApply": true,
     "strictPropertyInitialization": false,
-    "declaration": true
+    "declaration": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"
