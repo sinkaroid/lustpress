@@ -1,14 +1,14 @@
 <div align="center">
 <a href="http://localhost:3000/"><img width="500" src="resources/project/images/lustpress-node_1.png" alt="lustpress"></a>
 
-<h4 align="center">RESTful and experimental API for the PornHub and other adult videos</h4>
+<h4 align="center">RESTful and experimental API for PornHub and other R18 websites</h4>
 <p align="center">
 	<a href="https://github.com/sinkaroid/lustpress/actions/workflows/playground.yml"><img src="https://github.com/sinkaroid/lustpress/workflows/Playground/badge.svg"></a>
 	<a href="https://codeclimate.com/github/sinkaroid/lustpress/maintainability"><img src="https://api.codeclimate.com/v1/badges/29a2be78f853f9e3a4a3/maintainability" /></a>
 </p>
 
 Lustpress stand for Lust and **Express**, rebuild from [Jandapress](https://github.com/sinkaroid/jandapress) with completely different approach.
-The motivation of this project is to bring you an actionable data related to pornhub and other adult videos with gather, similar design pattern, endpoint bindings and consistent structure in mind.
+The motivation of this project is to bring you an actionable data related to pornhub and other r18 sites with gather, similar design pattern, endpoint bindings, and consistent structure in mind.
 
 <a href="https://sinkaroid.github.io/lustpress">Playground</a> •
 <a href="https://github.com/sinkaroid/lustpress/blob/master/CONTRIBUTING.md">Contributing</a> •
@@ -23,44 +23,51 @@ The motivation of this project is to bring you an actionable data related to por
   - [The problem](#the-problem)
   - [The solution](#the-solution)
   - [Features](#features)
-    - [Lustpress avaibility](#lustpress-avaibility)
+    - [Running tests](#Running-tests)
   - [Prerequisites](#prerequisites)
     - [Installation](#installation)
       - [Docker](#docker)
       - [Manual](#manual)
-    - [Running tests](#running-tests)
+    - [Tests case](#tests)
   - [Playground](https://sinkaroid.github.io/lustpress)
     - [Routing](#playground)
     - [Status response](#status-response)
   - [CLosing remarks](https://github.com/sinkaroid/lustpress/blob/master/CLOSING_REMARKS.md)
     - [Alternative links](https://github.com/sinkaroid/lustpress/blob/master/CLOSING_REMARKS.md#alternative-links)
   - [Pronunciation](#Pronunciation)
-  - [Client libraries / Wrappers](#client-libraries--wrappers)
+  - [Client libraries](#client-libraries)
   - [Acknowledgements](#acknowledgements)
   - [Legal](#legal)
   - [Discontinued playground](#frequently-asked-questions)
+  - [again, discontinued playground](#frequently-asked-questions)
 
 
 ## The problem
-Even official API is exists, they were lack and bad behavior, every single site has own structure and different way to interacts with.
-Instead making lot of abstraction and enumerating them manually, You can rely on lustpress to make less of pain. The current state is FREE to use, all anonymous usage is allowed no authentication and CORS enabled.
+
+Many developers consume r18 websites as a source of data when building web applications. However, most of these sites — such as pornhub, redtube, and others — do not provide official APIs or public resources that can be easily integrated into applications.
+
+As a result, developers often need to implement their own scraping logic, build multiple abstractions, and manually maintain integrations for each site.
+
+Lustpress aims to simplify this process by providing a unified interface for accessing data across multiple r18 sites. Instead of maintaining separate implementations, developers can rely on Lustpress to reduce complexity and development overhead.
+
+The current state of the service is **free to use**, meaning anonymous usage is allowed. No authentication is required, and **CORS is enabled** to support browser-based applications.
 
 ## The solution
-Don't make it long, make it short, all processed through single rest
+Don't make it long, make it short. All processed through single rest endpoint bindings
 <a href="https://sinkaroid.github.io/lustpress"><img src="resources/project/images/coverage.png" width="800"></a>
 
 ## Features
 
-- Ratelimiting and throttling
-- Gather the most adult videos on the internet
-- Objects taken are consistent structure
-- Objects taken is re-appended to make extendable
-- All in one: get, search, and random methods
-- In the future we may implement JWT authentication
-- Pure scraping, does not hit the API (if exists)
+- Aggregates data from multiple sites.
+- Provides a consistent and structured response format across all sources.
+- Extracted objects are normalized and reassembled to support extensibility.
+- Unified interface supporting **get**, **search**, and **random** methods.
+- Planned support for optional **JWT authentication** in future releases.
+- Primarily based on pure scraping techniques (with limited exceptions where required).
 
-## Lustpress avaibility
-**Features availability** that Lustpress has
+## Running tests
+Some tests may fail in CI environments because certain websites restrict or block automated requests originating from CI infrastructure and shared IP ranges, but trying to keep up
+
 | Site            | Status                                                                                                                                                                            | Get | Search | Random | Related |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------ | ------ | ------- |
 | `pornhub`       | [![pornhub](https://github.com/sinkaroid/lustpress/workflows/Pornhub%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/pornhub.yml)                   | `Yes`  | `Yes`     | `Yes`     | `Yes`     |
@@ -69,12 +76,12 @@ Don't make it long, make it short, all processed through single rest
 | `xvideos`   | [![xvideos](https://github.com/sinkaroid/lustpress/workflows/Xvideos%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/xvideos.yml)       | `Yes`  | `Yes`     | `Yes`      | `Yes`     |
 | `xhamster` | [![xhamster](https://github.com/sinkaroid/lustpress/workflows/Xhamster%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/xhamster.yml) | `Yes`  | `Yes`      | `Yes`      | `Yes`     |
 | `youporn`     | [![youporn](https://github.com/sinkaroid/lustpress/workflows/Youporn%20test/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/youporn.yml)            | `Yes`  | `Yes`     | `Yes`     | `Yes`     |
-| `eporner`     | — | `Yes` | `Yes` | `Yes` | `Yes` |
-| `txxx`        | — | `Yes` | `Yes` | `Yes` | `Yes` |
+| `eporner`     | [![Eporner test](https://github.com/sinkaroid/lustpress/actions/workflows/eporner.yml/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/eporner.yml) | `Yes` | `Yes` | `Yes` | `Yes` |
+| `txxx`        | [![Txxx test](https://github.com/sinkaroid/lustpress/actions/workflows/txxx.yml/badge.svg)](https://github.com/sinkaroid/lustpress/actions/workflows/txxx.yml) | `Yes` | `Yes` | `Yes` | `Yes` |
 
 ## Prerequisites
 <table>
-	<td><b>NOTE:</b> NodeJS 16.x or higher</td>
+	<td><b>NOTE:</b> NodeJS 22.x or higher</td>
 </table>
 
 To handle several requests from each website, You will also need [Redis](https://redis.io/) for persistent caching, free tier is available on [Redis Labs](https://redislabs.com/), You can also choose another adapters as we using [keyv](https://github.com/jaredwray/keyv) Key-value storage with support for multiple backends. When you choosing your own adapter, all data must be stored with `<Buffer>` type.
@@ -126,8 +133,28 @@ docker run -d \
 - Lustpress testing and hot reload
   - `npm run start:dev`
 
-## Running tests
-Lustpress testing
+## Tests
+Run the following commands to execute tests for each supported source:
+
+```bash
+# Check whether all supported sites are available for scraping
+npm run test
+
+# Check whether ph and (maybe the others do..) do Solving challenge in their website
+npm run test:mock
+
+# Run tests for individual sources
+npm run test:pornhub
+npm run test:xnxx
+npm run test:redtube
+npm run test:xvideos
+npm run test:xhamster
+npm run test:youporn
+npm run test:eporner
+npm run test:txxx
+```
+
+
 
 ### Start the production server
 `npm run start:prod`
@@ -135,10 +162,10 @@ Lustpress testing
 ### Running development server
 `npm run start:dev`
 
-### Check the whole sites, It's available for scraping or not
-`npm run test`
+### Generating playground like swagger from apidoc definition
+`npm run build:apidoc`
 
-> To running other tests, you can see object scripts in file `package.json`
+> To running other tests, you can see object scripts in file `package.json` or modify the `lustpress.test.ts` according your needs
 
 ## Playground
 https://sinkaroid.github.io/lustpress
@@ -214,8 +241,6 @@ The missing piece of xhamster.com - https://sinkaroid.github.io/lustpress/#api-x
   - **search**, takes parameters : `key`, `?page`, and TBD
   - **related**, takes parameters : `id`
   - **random**
-  - <u>sort parameters on search</u>
-    - TBD
   - Example
     - http://localhost:3000/xhamster/get?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
     - http://localhost:3000/xhamster/search?key=arab&page=2
@@ -259,8 +284,6 @@ https://sinkaroid.github.io/lustpress/#api-txxx
   - **search**, takes parameters : `key`, `?page`
   - **related**, takes parameters : `id`
   - **random**
-  - <u>sort parameters on search</u>
-    - TBD
   - Example
     - http://localhost:3000/txxx/get?id=5309183
     - http://localhost:3000/txxx/search?key=femboy&page=1
@@ -288,14 +311,12 @@ To continue using Lustpress, please deploy and run your own self-hosted instance
 `en_US` • **/lʌstˈprɛs/** — "lust" stand for this project and "press" for express.
 
 
-## Client libraries / Wrappers
+## Client libraries
 Seamlessly integrate with the languages you love, simplified the usage, and intelisense definitions on your IDEs
 
 - TBD
 - Or [create your own](https://github.com/sinkaroid/lustpress/edit/master/README.md)
 
-## Acknowledgements
-I thank you to all the [Scathach's supporter](https://scathachbot.xyz/about) who made this project exists :gajah_ngecrot:
 
 ## Legal
 This tool can be freely copied, modified, altered, distributed without any attribution whatsoever. However, if you feel
