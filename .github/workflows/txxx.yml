@@ -1,4 +1,4 @@
-name: Xvideos test
+name: Txxx test
 
 on:
   push:
@@ -29,5 +29,5 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Xvideos test
-        run: npm run test:xvideos
+      - name: Txxx test
+        run: npm run test:txxx

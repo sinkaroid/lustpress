@@ -1,4 +1,4 @@
-name: Xvideos test
+name: Eporner test
 
 on:
   push:
@@ -29,5 +29,5 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Xvideos test
-        run: npm run test:xvideos
+      - name: Eporner test
+        run: npm run test:eporner

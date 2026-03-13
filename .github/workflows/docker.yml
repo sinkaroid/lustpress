@@ -6,22 +6,35 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Log into GitHub Container Registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        
-      - name: Get the package.json version
-        id: package-version
-        run: echo ::set-output name=version::$(jq -r .version package.json)
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ghcr.io/${{ github.repository }}:${{ steps.package-version.outputs.version }}
-      - name: Tag the Docker image
-        run: docker tag ghcr.io/${{ github.repository }}:${{ steps.package-version.outputs.version }} ghcr.io/${{ github.repository }}:latest
-      - name: Push the Docker image
-        run: docker push ghcr.io/${{ github.repository }} --all-tags
-        
 
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Set image name
+        run: echo "IMAGE_NAME=ghcr.io/$GITHUB_REPOSITORY" >> $GITHUB_ENV
+
+      - name: Log into GitHub Container Registry
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+      - name: Get the package.json version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "IMAGE_TAG=$VERSION" >> $GITHUB_ENV
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag "$IMAGE_NAME:$IMAGE_TAG"
+
+      - name: Tag the Docker image
+        run: docker tag "$IMAGE_NAME:$IMAGE_TAG" "$IMAGE_NAME:latest"
+
+      - name: Push the Docker image
+        run: docker push "$IMAGE_NAME" --all-tags
