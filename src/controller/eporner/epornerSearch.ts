@@ -1,7 +1,7 @@
 import { scrapeContent } from "../../scraper/eporner/epornerSearchController";
 import c from "../../utils/options";
 import { logger } from "../../utils/logger";
-import { maybeError, spacer } from "../../utils/modifier";
+import { maybeError } from "../../utils/modifier";
 import { Request, Response } from "express";
 
 export async function searchEporner(req: Request, res: Response) {
@@ -45,28 +45,28 @@ export async function searchEporner(req: Request, res: Response) {
     if (isNaN(page)) throw Error("Parameter page must be a number");
 
     const slug = key
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, "-");
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-");
 
     const url =
         page === 1
-        ? `${c.EPORNER}/tag/${slug}/`
-        : `${c.EPORNER}/tag/${slug}/${page}/`;
+          ? `${c.EPORNER}/tag/${slug}/`
+          : `${c.EPORNER}/tag/${slug}/${page}/`;
 
     const data = await scrapeContent(url);
 
     logger.info({
-        path: req.path,
-        query: req.query,
-        method: req.method,
-        ip: req.ip,
-        useragent: req.get("User-Agent")
+      path: req.path,
+      query: req.query,
+      method: req.method,
+      ip: req.ip,
+      useragent: req.get("User-Agent")
     });
 
     return res.json(data);
-    } catch (err) {
+  } catch (err) {
     const e = err as Error;
     res.status(400).json(maybeError(false, e.message));
-    }
+  }
 }

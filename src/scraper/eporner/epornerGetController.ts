@@ -49,8 +49,9 @@ export async function scrapeContent(url: string) {
         this.upVote = $(".likeup i").first().text().trim() || "0";
         this.downVote = $(".likedown i").first().text().trim() || "0";
         
-        const jsonLdText = $('script[type="application/ld+json"]').first().html() || "{}";
+        const jsonLdText = $("script[type=\"application/ld+json\"]").first().html() || "{}";
         const jsonLd = JSON.parse(jsonLdText);
+        // eslint-disable-next-line no-unused-vars
         const isoDuration = jsonLd.duration; // "PT00H8M12S"
         this.publish = jsonLd.uploadDate || "None";
 
@@ -62,10 +63,10 @@ export async function scrapeContent(url: string) {
         this.video = `https://www.eporner.com/embed/${code}/`;
 
         this.tags = $("li.vit-category a")
-        .map((_, el) => $(el).text().trim()).get();
+          .map((_, el) => $(el).text().trim()).get();
 
         this.models = $("li.vit-pornstar a")
-        .map((_, el) => $(el).text().trim()).get();
+          .map((_, el) => $(el).text().trim()).get();
       }
     }
     

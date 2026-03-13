@@ -1,54 +1,159 @@
+import { URL } from "node:url";
+import { chromium } from "playwright";
 import p, { IResponse } from "phin";
 import Keyv from "keyv";
+import KeyvRedis from "@keyv/redis";
 import pkg from "../package.json";
 
-
-const keyv = new Keyv(process.env.REDIS_URL);
+const keyv = process.env.REDIS_URL
+  ? new Keyv({ store: new KeyvRedis(process.env.REDIS_URL) })
+  : new Keyv();
 
 keyv.on("error", err => console.log("Connection Error", err));
 const ttl = 1000 * 60 * 60 * Number(process.env.EXPIRE_CACHE);
 
-
 class LustPress {
+
   url: string;
   useragent: string;
+  private cookieCache: { [domain: string]: string } = {};
+
+
   constructor() {
     this.url = "";
-    this.useragent = `${pkg.name}/${pkg.version} Node.js/16.9.1`;
+    this.useragent = `${pkg.name}/${pkg.version} Node.js/${process.versions.node}`;
+  }
+
+  async getCookies(url: string): Promise<string> {
+    const browser = await chromium.launch({ headless: true });
+
+    const context = await browser.newContext({
+      userAgent: process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/${process.versions.node}`
+    });
+
+    const page = await context.newPage();
+    await page.goto(url, { waitUntil: "domcontentloaded" });
+    await page.waitForLoadState("networkidle");
+    const cookies = await context.cookies();
+    await browser.close();
+    return cookies.map(c => `${c.name}=${c.value}`).join("; ");
   }
 
   /**
-     * Fetch body from url and check if it's cached
-     * @param url url to fetch
-     * @returns Buffer 
-     */
+   * Fetch body from url and check if it's cached
+   * @param url url to fetch
+   * @returns Buffer 
+   */
   async fetchBody(url: string): Promise<Buffer> {
+
     const cached = await keyv.get(url);
 
     if (cached) {
       console.log("Fetching from cache");
       return cached;
+
     } else if (url.includes("/random")) {
+
       console.log("Random should not be cached");
-      const res = await p({ 
+
+      const isPornhub = /pornhub\.com/i.test(url);
+
+      let cookieHeader = "";
+
+      if (isPornhub) {
+        const domain = new URL(url).hostname;
+
+        if (this.cookieCache[domain]) {
+          console.log("Using cached cookie");
+          cookieHeader = this.cookieCache[domain];
+        } else {
+          console.log("Solving challenge via playwright");
+          cookieHeader = await this.getCookies(url);
+          this.cookieCache[domain] = cookieHeader;
+        }
+      }
+
+      console.log(`Fetching from ${isPornhub ? "phin (cookie)" : "phin"}`);
+
+      const res = await p({
         url: url,
-        "headers": {
-          "User-Agent": process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/16.9.1`,
-        }, 
-        followRedirects: true
-      });
-      return res.body;
-    } else {
-      console.log("Fetching from source");
-      url = url.replace(/\/\//g, "/");
-      const res = await p({ 
-        url: url,
-        "headers": {
-          "User-Agent": process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/16.9.1`,
+        headers: {
+          "User-Agent": process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/${process.versions.node}`,
+          ...(cookieHeader && { "Cookie": cookieHeader })
         },
         followRedirects: true
       });
+
+      if (isPornhub && res.statusCode !== 200) {
+        const domain = new URL(url).hostname;
+        console.log("Cookie invalid, clearing cache and retrying via playwright");
+        delete this.cookieCache[domain];
+        const newCookie = await this.getCookies(url);
+        this.cookieCache[domain] = newCookie;
+        const retry = await p({
+          url: url,
+          headers: {
+            "User-Agent": process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/${process.versions.node}`,
+            "Cookie": newCookie
+          },
+          followRedirects: true
+        });
+        return retry.body;
+      }
+
+      return res.body;
+
+    } else {
+
+      console.log("Fetching from source");
+      url = url.replace(/\/\//g, "/");
+      const isPornhub = /pornhub\.com/i.test(url);
+
+      let cookieHeader = "";
+
+      if (isPornhub) {
+        const domain = new URL(url).hostname;
+
+        if (this.cookieCache[domain]) {
+          console.log("Using cached cookie");
+          cookieHeader = this.cookieCache[domain];
+        } else {
+          console.log("Solving challenge via playwright");
+          cookieHeader = await this.getCookies(url);
+          this.cookieCache[domain] = cookieHeader;
+        }
+      }
+
+      console.log(`Fetching from ${isPornhub ? "phin (cookie)" : "phin"}`);
+
+      const res = await p({
+        url: url,
+        headers: {
+          "User-Agent": process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/16.9.1`,
+          ...(cookieHeader && { "Cookie": cookieHeader })
+        },
+        followRedirects: true
+      });
+
+      if (isPornhub && res.statusCode !== 200) {
+        const domain = new URL(url).hostname;
+        console.log("Cookie invalid, clearing cache and retrying via playwright");
+        delete this.cookieCache[domain];
+        const newCookie = await this.getCookies(url);
+        this.cookieCache[domain] = newCookie;
+        const retry = await p({
+          url: url,
+          headers: {
+            "User-Agent": process.env.USER_AGENT || `${pkg.name}/${pkg.version} Node.js/16.9.1`,
+            "Cookie": newCookie
+          },
+          followRedirects: true
+        });
+        return retry.body;
+      }
+
       await keyv.set(url, res.body, ttl);
+
       return res.body;
     }
   }
@@ -110,7 +215,7 @@ class LustPress {
       }
     }
   }
-  
+
   /**
    * convert seconds to minute
    * @param seconds seconds to convert
@@ -143,9 +248,9 @@ class LustPress {
    * @returns <Promise<string>>
    */
   async getServer(): Promise<string> {
-    const raw = await p({ 
-      "url": "http://ip-api.com/json", 
-      "parse": "json" 
+    const raw = await p({
+      "url": "http://ip-api.com/json",
+      "parse": "json"
     }) as IResponse;
     const data = raw.body as unknown as { country: string, regionName: string };
     return `${data.country}, ${data.regionName}`;
