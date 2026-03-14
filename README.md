@@ -111,11 +111,11 @@ USER_AGENT = "lustpress/8.0.1 Node.js/22.22.0"
     docker pull ghcr.io/sinkaroid/lustpress:latest
     docker run -p 3000:3000 -d ghcr.io/sinkaroid/lustpress:latest
 
-### Docker (your own)
+### Docker (adjust your own)
 ```bash
 docker run -d \
   --name=lustpress \
-  -p 3000:3000 \
+  -p 3028:3000 \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
   -e USER_AGENT='lustpress/8.0.1 Node.js/22.22.0' \
