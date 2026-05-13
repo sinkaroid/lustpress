@@ -29,6 +29,9 @@ module.exports = [
         beforeAll: "readonly",
         afterAll: "readonly",
         it: "readonly",
+        AbortController: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
       },
     },
     plugins: {
