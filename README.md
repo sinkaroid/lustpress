@@ -7,8 +7,8 @@
 	<a href="https://codeclimate.com/github/sinkaroid/lustpress/maintainability"><img src="https://api.codeclimate.com/v1/badges/29a2be78f853f9e3a4a3/maintainability" /></a>
 </p>
 
-Lustpress was originally named Lust and Express (legacy name) and now runs on **Bun** + **Elysia** a high-performance remake from the ground up using Bun.
-The motivation of this project is to bring you an actionable data related to pornhub and other r18 sites with gather, similar design pattern, endpoint bindings, and consistent structure in mind.
+Lustpress was originally named Lust and Express (legacy name) and now runs on **Bun** + **Elysia**.
+The motivation of this project is carry an actionable data related to pornhub and other r18 sites with gather, similar design pattern, endpoint bindings, and consistent structure in mind.
 
 <a href="https://sinkaroid.github.io/lustpress">Playground</a> •
 <a href="https://github.com/sinkaroid/lustpress/blob/master/CONTRIBUTING.md">Contributing</a> •
@@ -28,11 +28,11 @@ The motivation of this project is to bring you an actionable data related to por
     - [Installation](#installation)
       - [Docker](#docker)
       - [Manual](#manual)
-    - [Tests case](#tests)
+    - [Tests](#tests)
   - [Playground](https://sinkaroid.github.io/lustpress)
     - [Routing](#playground)
     - [Status response](#status-response)
-  - [Pornhub JS Challenge Solver](#pornhub-js-challenge-solver)
+  - [Ph Challenge Solver](#pornhub-js-challenge-solver)
   - [CLosing remarks](https://github.com/sinkaroid/lustpress/blob/master/CLOSING_REMARKS.md)
     - [Alternative links](https://github.com/sinkaroid/lustpress/blob/master/CLOSING_REMARKS.md#alternative-links)
   - [Pronunciation](#Pronunciation)
@@ -99,7 +99,7 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # you must identify your origin, if not set it will use default
-USER_AGENT = "lustpress/8.2.0-alpha Bun/1.3.13"
+USER_AGENT = "lustpress/8.2.3-alpha Bun/1.3.13"
 ```
 
 ### Docker
@@ -114,7 +114,7 @@ docker run -d \
   -p 3028:3000 \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/8.2.0-alpha Bun/1.3.13' \
+  -e USER_AGENT='lustpress/8.2.3-alpha Bun/1.3.13' \
   ghcr.io/sinkaroid/lustpress:latest
 ```
 
@@ -129,7 +129,7 @@ docker run -d \
 - Lustpress testing and hot reload
   - `bun run start:dev`
 
-## Running tests
+## Tests
 Run the following commands to execute tests for each supported source:
 
 ```bash
