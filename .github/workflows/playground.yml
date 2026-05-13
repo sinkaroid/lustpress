@@ -1,0 +1,66 @@
+name: Playground
+
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Generate Swagger JSON and HTML
+        run: |
+          mkdir public
+          bun run start:dev &
+          sleep 3
+          curl -s http://localhost:3000/docs/json > public/swagger.json
+          cat << 'EOF' > public/index.html
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>LustPress API Playground</title>
+              <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+              <style>body { margin: 0; padding: 0; } .swagger-ui .topbar { display: none; }</style>
+          </head>
+          <body>
+              <div id="swagger-ui"></div>
+              <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+              <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js"></script>
+              <script>
+                  window.onload = () => {
+                      window.ui = SwaggerUIBundle({
+                          url: "./swagger.json",
+                          dom_id: '#swagger-ui',
+                          deepLinking: true,
+                          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+                          plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+                      });
+                  };
+              </script>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
