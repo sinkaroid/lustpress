@@ -1,6 +1,6 @@
 {
   "name": "lustpress",
-  "version": "8.2.3-alpha",
+  "version": "8.2.4-alpha",
   "description": "RESTful and experimental API for PH and other R18 websites",
   "main": "src/index.ts",
   "scripts": {

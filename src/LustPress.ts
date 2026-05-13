@@ -9,7 +9,7 @@ const keyv = process.env.REDIS_URL
   : new Keyv();
 
 keyv.on("error", (err) => console.log("Connection Error", err));
-const ttl = 1000 * 60 * 60 * Number(process.env.EXPIRE_CACHE);
+const ttl = 1000 * 60 * 60 * Number(process.env.EXPIRE_CACHE || "1");
 
 const GEO_TIMEOUT_MS = 3000;
 let cachedLastLocation: string | null = null;
@@ -77,7 +77,10 @@ class LustPress {
 
   async fetchBody(url: string): Promise<Buffer> {
     const cached = await keyv.get(url);
-    if (cached) return cached;
+    if (cached) {
+      console.log(`[CACHE HIT] ${url}`);
+      return cached;
+    }
 
     const isPornhub = /pornhub\.com/i.test(url);
     const domain = new URL(url).hostname;
@@ -96,6 +99,7 @@ class LustPress {
       headers["Accept-Language"] = "en-US,en;q=0.9";
     }
 
+    console.log(`[FETCH] ${url}`);
     let res = await fetch(url, { headers, redirect: "follow" });
     let text = await res.text();
 
