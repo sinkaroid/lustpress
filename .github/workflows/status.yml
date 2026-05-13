@@ -30,4 +30,7 @@ jobs:
         run: bun run build
 
       - name: Check status code
-        run: bun run test
+        run: |
+          bun run start:dev &
+          sleep 3
+          bun run test

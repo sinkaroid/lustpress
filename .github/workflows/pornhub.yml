@@ -27,4 +27,7 @@ jobs:
         run: bun install
 
       - name: Run test
-        run: bun run test:pornhub
+        run: |
+          bun run start:dev &
+          sleep 3
+          bun run test:pornhub
