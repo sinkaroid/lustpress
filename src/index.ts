@@ -59,11 +59,11 @@ const app = new Elysia()
       stack: (error as Error).stack,
     };
   })
-  .use(scrapeRoutes)
+  .use(scrapeRoutes) // reuse legacy error handling
   .listen(process.env.PORT || 3000);
 
 console.log(
   `Lustpress is running at ${app.server?.hostname}:${app.server?.port}`
 );
 
-export type App = typeof app;
+export type App = typeof app;
