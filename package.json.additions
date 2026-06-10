@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "vercel-build": "echo \"No build step — Vercel runs src/index.ts / api/index.ts directly\""
+  },
+  "optionalDependencies": {
+    "@sinclair/typebox": "^0.34.0",
+    "openapi-types": "^12.1.3"
+  }
+}
