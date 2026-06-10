@@ -1,0 +1,13 @@
+// Substitua a linha do useragent em src/LustPress.ts (construtor):
+//
+// ANTES (quebra no runtime Node da Vercel):
+//   this.useragent = process.env.USER_AGENT || `${pkg.name}/${pkg.version} Bun/${Bun.version}`;
+//
+// DEPOIS (funciona em Bun e Node):
+const runtimeVersion =
+  typeof Bun !== "undefined"
+    ? `Bun/${Bun.version}`
+    : `Node/${process.version.replace(/^v/, "")}`;
+
+this.useragent =
+  process.env.USER_AGENT || `${pkg.name}/${pkg.version} ${runtimeVersion}`;
