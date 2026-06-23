@@ -3,6 +3,7 @@ import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { lust } from "./LustPress";
 import { scrapeRoutes } from "./router/endpoint";
+import { registerMetrics, startSystemMetrics, registry } from "./utils/metrics";
 import pkg from "../package.json";
 
 const app = new Elysia()
@@ -19,6 +20,12 @@ const app = new Elysia()
       },
     })
   )
+  .use(registerMetrics())
+  .get("/metrics", async () => {
+    return new Response(await registry.metrics(), {
+      headers: { "Content-Type": registry.contentType },
+    });
+  })
   .get("/", async () => ({
     success: true,
     playground: "https://sinkaroid.github.io/lustpress",
@@ -65,5 +72,7 @@ const app = new Elysia()
 console.log(
   `Lustpress is running at ${app.server?.hostname}:${app.server?.port}`
 );
+
+startSystemMetrics();
 
 export type App = typeof app;

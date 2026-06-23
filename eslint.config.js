@@ -32,6 +32,11 @@ module.exports = [
         AbortController: "readonly",
         setTimeout: "readonly",
         clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        performance: "readonly",
+        Request: "readonly",
+        Response: "readonly",
       },
     },
     plugins: {
