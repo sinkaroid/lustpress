@@ -15,6 +15,8 @@ export const graphqlPlugin = new Elysia()
       variableValues: q.variables ? JSON.parse(q.variables) : undefined,
     });
     return result;
+  }, {
+    detail: { summary: "Execute GraphQL query (GET)", tags: ["GraphQL"] },
   })
 
   // ── POST /graphql ────────────────────────────────
@@ -45,4 +47,6 @@ export const graphqlPlugin = new Elysia()
       operationName: json.operationName,
     });
     return result;
+  }, {
+    detail: { summary: "Execute GraphQL query (POST)", tags: ["GraphQL"] },
   });
