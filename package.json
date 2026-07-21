@@ -1,6 +1,6 @@
 {
   "name": "lustpress",
-  "version": "8.4.0-alpha",
+  "version": "8.5.0-alpha",
   "description": "Unified REST + GraphQL API for PornHub and other R18 platforms",
   "main": "src/index.ts",
   "scripts": {
