@@ -1,4 +1,4 @@
-FROM oven/bun:1.3.13-alpine AS base
+FROM oven/bun:1.3.14-alpine AS base
 WORKDIR /srv/app
 
 # 1. Install production dependencies only
