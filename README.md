@@ -1,7 +1,7 @@
 <div align="center">
 <a href="http://localhost:3000/"><img width="500" src="resources/project/images/lustpress-node_1.png" alt="lustpress"></a>
 
-<h4 align="center">RESTful and experimental API for PornHub and other R18 websites</h4>
+<h4 align="center">Unified REST + GraphQL API for PornHub and other R18 websites</h4>
 <p align="center">
 	<a href="https://github.com/sinkaroid/lustpress/actions/workflows/playground.yml"><img src="https://github.com/sinkaroid/lustpress/workflows/Playground/badge.svg"></a>
 	<a href="https://codeclimate.com/github/sinkaroid/lustpress/maintainability"><img src="https://api.codeclimate.com/v1/badges/29a2be78f853f9e3a4a3/maintainability" /></a>
@@ -37,9 +37,9 @@ The motivation of this project is carry an actionable data related to pornhub an
   - [CLosing remarks](https://github.com/sinkaroid/lustpress/blob/master/CLOSING_REMARKS.md)
     - [Alternative links](https://github.com/sinkaroid/lustpress/blob/master/CLOSING_REMARKS.md#alternative-links)
   - [Pronunciation](#Pronunciation)
-  - [Legal](#legal)
   - [Discontinued playground](#frequently-asked-questions)
-  - [again, discontinued playground](#frequently-asked-questions)
+  - [Legal](#legal)
+  - [Microservices](#microservices)
 
 ## The problem
 
@@ -117,6 +117,7 @@ USER_AGENT = "lustpress/8.2.3-alpha Bun/1.3.14"
 docker run -d \
   --name=lustpress \
   -p 3028:3000 \
+  -e LUSTPRESS_GRAPHQL=true \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
   -e USER_AGENT='lustpress/8.2.3-alpha Bun/1.3.14' \
@@ -174,6 +175,99 @@ bun run test:txxx
 
 https://sinkaroid.github.io/lustpress
 
+## Graphql
+
+The GraphQL endpoint is experimental and gated behind the `LUSTPRESS_GRAPHQL=true` environment variable.
+
+Start the server with GraphQL enabled:
+
+```bash
+# On Unix-like systems
+LUSTPRESS_GRAPHQL=true bun run start:dev
+
+# On Windows (PowerShell)
+$env:LUSTPRESS_GRAPHQL="true"; bun run start:dev
+```
+
+Accessing endpoint: Send GET or POST requests to `http://localhost:3000/graphql`.
+
+GraphiQL Playground: Open `http://localhost:3000/graphql` in your browser when running in development mode to use the interactive playground.
+
+### Curl Examples
+
+**POST Request:**
+
+```bash
+curl -X POST http://localhost:3000/graphql \
+  -H "Content-Type: application/json" \
+  -d "{\"query\": \"{ xnxx { get(id: \\\"video-1crugx78/chainsaw_man_hentai\\\") { success data { title } } } }\"}"
+```
+
+**GET Request:**
+
+```bash
+curl -G "http://localhost:3000/graphql" \
+  --data-urlencode "query={ xnxx { get(id: \"video-1crugx78/chainsaw_man_hentai\") { success data { title } } } }"
+```
+
+**Raw POST (application/graphql):**
+
+```bash
+curl -X POST http://localhost:3000/graphql \
+  -H "Content-Type: application/graphql" \
+  -d "{ xnxx { search(key: \"makima\", page: \"1\") { data { title link } } } }"
+```
+
+### Example Queries
+
+**Query Pornhub Video:**
+
+```graphql
+query {
+  pornhub {
+    get(id: "6484dd996d97a") {
+      success
+      data {
+        title
+      }
+    }
+  }
+}
+```
+
+**Search Xnxx:**
+
+```graphql
+query {
+  xnxx {
+    search(key: "milf", page: "1") {
+      data {
+        title
+        link
+      }
+    }
+  }
+}
+```
+
+**Random Redtube:**
+
+```graphql
+query {
+  redtube {
+    random {
+      success
+      data {
+        title
+        id
+      }
+    }
+  }
+}
+```
+
+## Rest
+
 - These `parameter?`: means is optional
 
 - `/` : index page
@@ -190,9 +284,9 @@ The missing piece of pornhub.com - https://sinkaroid.github.io/lustpress/#api-po
   - <u>sort parameters on search</u>
     - "mr", "mv", "tr", "lg"
   - Example
-    - http://localhost:3000/pornhub/get?id=ph63c4e1dc48fe7
+    - http://localhost:3000/pornhub/get?id=6484dd996d97a
     - http://localhost:3000/pornhub/search?key=milf&page=2&sort=mr
-    - http://localhost:3000/pornhub/related?id=ph63c4e1dc48fe7
+    - http://localhost:3000/pornhub/related?id=6484dd996d97a
     - http://localhost:3000/pornhub/random
 
 ### Xnxx
@@ -207,9 +301,9 @@ The missing piece of xnxx.com - https://sinkaroid.github.io/lustpress/#api-xnxx
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - http://localhost:3000/xnxx/get?id=video-17vah71a/makima_y_denji
+    - http://localhost:3000/xnxx/get?id=video-1crugx78/chainsaw_man_hentai
     - http://localhost:3000/xnxx/search?key=bbc&page=2
-    - http://localhost:3000/xnxx/related?id=video-17vah71a/makima_y_denji
+    - http://localhost:3000/xnxx/related?id=video-1crugx78/chainsaw_man_hentai
     - http://localhost:3000/xnxx/random
 
 ### RedTube
@@ -241,9 +335,9 @@ The missing piece of xvideos.com - https://sinkaroid.github.io/lustpress/#api-xv
   - <u>sort parameters on search</u>
     - TBD
   - Example
-    - http://localhost:3000/xvideos/get?id=video73564387/cute*hentai_maid_with_pink_hair_fucking_uncensored*
+    - http://localhost:3000/xvideos/get?id=video.ooiihap0e4f/makima_office
     - http://localhost:3000/xvideos/search?key=hentai&page=2
-    - http://localhost:3000/xvideos/related?id=video73564387/cute*hentai_maid_with_pink_hair_fucking_uncensored*
+    - http://localhost:3000/xvideos/related?id=video.ooiihap0e4f/makima_office
     - http://localhost:3000/xvideos/random
 
 ### Xhamster
@@ -256,9 +350,9 @@ The missing piece of xhamster.com - https://sinkaroid.github.io/lustpress/#api-x
   - **related**, takes parameters : `id`
   - **random**
   - Example
-    - http://localhost:3000/xhamster/get?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
+    - http://localhost:3000/xhamster/get?id=spx-x-family-animation-xhonCAu
     - http://localhost:3000/xhamster/search?key=arab&page=2
-    - http://localhost:3000/xhamster/related?id=videos/horny-makima-tests-new-toy-and-cums-intensely-xhAa5wx
+    - http://localhost:3000/xhamster/related?id=spx-x-family-animation-xhonCAu
     - http://localhost:3000/xhamster/random
 
 ### YouPorn
@@ -355,3 +449,14 @@ This tool can be freely copied, modified, altered, distributed without any attri
 like this tool deserves an attribution, mention it. It won't hurt anybody.
 
 > Licence: WTF.
+
+## Microservices
+
+Microservices and subprojects is part of a broader ecosystem of specialized services, each focused on a specific platform or content source while sharing a common design philosophy maintained by [ScathachGrip](https://github.com/ScathachGrip)
+
+- **sinkaroid/lustpress** — Unified REST and GraphQL API for PornHub and other R18 platforms
+- [sinkaroid/jandapress](https://github.com/sinkaroid/jandapress) — Unified REST and GraphQL API for nhentai and other doujinshi.
+- [sinkaroid/matoi](https://github.com/sinkaroid/matoi) — Unified REST + GraphQL gateway for booru imageboards
+- [sinkaroid/pixivHono](https://github.com/sinkaroid/pixivHono) — Unified REST and GraphQL API for Pixiv
+
+Each service is developed independently, enabling modular deployments, isolated maintenance, and platform-specific optimizations while remaining interoperable within the ecosystem.
