@@ -3,6 +3,7 @@ import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { lust } from "./LustPress";
 import { scrapeRoutes } from "./router/endpoint";
+import { graphqlPlugin } from "./graphql/handler";
 import { registerMetrics, startSystemMetrics, registry } from "./utils/metrics";
 import pkg from "../package.json";
 
@@ -67,6 +68,9 @@ const app = new Elysia()
     };
   })
   .use(scrapeRoutes) // reuse legacy error handling
+  .use(
+    process.env.LUSTPRESS_GRAPHQL === "true" ? graphqlPlugin : (app) => app,
+  )
   .listen(process.env.PORT || 3000);
 
 console.log(
