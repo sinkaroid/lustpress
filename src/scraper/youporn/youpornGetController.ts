@@ -26,7 +26,9 @@ export async function scrapeContent(url: string) {
       constructor() {
         this.link = $("link[rel='canonical']").attr("href") || "None";
         this.id =
-          this.link.replace("https://www.youporn.com/watch/", "") || "None";
+          this.link
+            .replace("https://www.youporn.com/watch/", "")
+            .replace(/\/$/, "") || "None";
         this.title = $("meta[property='og:title']").attr("content") || "None";
         this.image = $("meta[property='og:image']").attr("content") || "None";
         this.duration =
@@ -57,6 +59,13 @@ export async function scrapeContent(url: string) {
     }
 
     const yp = new YouPorn();
+    if (
+      yp.id.includes("video-inactive") ||
+      yp.title === "None" ||
+      yp.link.includes("video-inactive")
+    ) {
+      throw Error("Video not found or inactive");
+    }
     const data: IVideoData = {
       success: true,
       data: {

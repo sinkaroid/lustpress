@@ -18,7 +18,7 @@ export async function scrapeContent(url: string) {
       search: object[];
 
       constructor() {
-        const cards = $("div.video-box.pc");
+        const cards = $("article.video-box.pc");
 
         this.links = cards
           .map((i, el) => {
@@ -38,6 +38,7 @@ export async function scrapeContent(url: string) {
           .map((i, el) => {
             return (
               $(el).find("img.thumb-image").attr("data-src") ||
+              $(el).find("img.thumb-image").attr("data-poster") ||
               $(el).find("img.thumb-image").attr("src")
             );
           })
@@ -56,6 +57,7 @@ export async function scrapeContent(url: string) {
                 .find(".view-rating-container .info-views")
                 .first()
                 .text()
+                .replace(/^Views:\s*/i, "")
                 .trim() || "None"
             );
           })
