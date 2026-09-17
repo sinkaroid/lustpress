@@ -83,7 +83,7 @@ Some tests may fail in CI environments because certain websites restrict or bloc
 ## Prerequisites
 
 <table>
-	<td><b>NOTE:</b> Bun 1.3.13 or higher</td>
+	<td><b>NOTE:</b> Bun 1.4.2 or higher</td>
 </table>
 
 To handle several requests from each website, You will also need [Redis](https://redis.io/) for persistent caching, free tier is available on [Redis Labs](https://redislabs.com/), You can also choose another adapters as we using [keyv](https://github.com/jaredwray/keyv) Key-value storage with support for multiple backends. When you choosing your own adapter, all data must be stored with `<Buffer>` type.
@@ -103,7 +103,7 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # you must identify your origin, if not set it will use default
-USER_AGENT = "lustpress/8.2.3-alpha Bun/1.3.14"
+USER_AGENT = "lustpress/8.5.0-alpha Bun/1.4.2"
 ```
 
 ### Docker
@@ -120,7 +120,7 @@ docker run -d \
   -e LUSTPRESS_GRAPHQL=true \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/8.2.3-alpha Bun/1.3.14' \
+  -e USER_AGENT='lustpress/8.5.0-alpha Bun/1.4.2' \
   ghcr.io/sinkaroid/lustpress:latest
 ```
 
@@ -361,15 +361,13 @@ The missing piece of youporn.com - https://sinkaroid.github.io/lustpress/#api-yo
 
 - `/youporn` : youporn api
   - **get**, takes parameters : `id`
-  - **search**, takes parameters : `key`, `?page`, and TBD
+  - **search**, takes parameters : `key`, `?page`
   - **related**, takes parameters : `id`
   - **random**
-  - <u>sort parameters on search</u>
-    - TBD
   - Example
-    - http://localhost:3000/youporn/get?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
+    - http://localhost:3000/youporn/get?id=190798561
     - http://localhost:3000/youporn/search?key=teen&page=2
-    - http://localhost:3000/youporn/related?id=16621192/chainsaw-man-fuck-makima-3d-porn-60-fps
+    - http://localhost:3000/youporn/related?id=190798561
     - http://localhost:3000/youporn/random
 
 ### Eporner

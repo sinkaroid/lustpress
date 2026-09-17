@@ -11,14 +11,11 @@
     "noEmit": true,
     "composite": true,
     "strict": true,
-    "downlevelIteration": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "allowUnreachableCode": false,
-    "baseUrl": "src",
-    "paths": {}
+    "allowUnreachableCode": false
   },
   "include": [
     "src/**/*"
