@@ -103,7 +103,7 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # you must identify your origin, if not set it will use default
-USER_AGENT = "lustpress/8.5.0-alpha Bun/1.4.2"
+USER_AGENT = "lustpress/8.5.1-alpha Bun/1.4.2"
 ```
 
 ### Docker
@@ -120,7 +120,7 @@ docker run -d \
   -e LUSTPRESS_GRAPHQL=true \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/8.5.0-alpha Bun/1.4.2' \
+  -e USER_AGENT='lustpress/8.5.1-alpha Bun/1.4.2' \
   ghcr.io/sinkaroid/lustpress:latest
 ```
 
