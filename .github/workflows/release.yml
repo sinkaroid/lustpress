@@ -27,7 +27,7 @@ jobs:
         id: meta
         shell: bash
         run: |
-          VERSION="$(jq -r .version package.json)"
+          VERSION="$(grep '^version' Cargo.toml | head -1 | awk -F '"' '{print $2}')"
           TAG="v${VERSION}"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"

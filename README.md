@@ -7,7 +7,7 @@
 	<a href="https://codeclimate.com/github/sinkaroid/lustpress/maintainability"><img src="https://api.codeclimate.com/v1/badges/29a2be78f853f9e3a4a3/maintainability" /></a>
 </p>
 
-Lustpress was originally named Lust and Express (legacy name) and now runs on **Bun** + **Elysia**.
+Lustpress was originally named Lust and Express (legacy name) and now runs on **Rust** + **Axum**.
 The motivation of this project is carry an actionable data related to pornhub and other r18 sites with gather, similar design pattern, endpoint bindings, and consistent structure in mind.
 
 <a href="https://sinkaroid.github.io/lustpress">Playground</a> •
@@ -83,10 +83,10 @@ Some tests may fail in CI environments because certain websites restrict or bloc
 ## Prerequisites
 
 <table>
-	<td><b>NOTE:</b> Bun 1.4.2 or higher</td>
+	<td><b>NOTE:</b> Rust 1.96.0 or higher (Rust Edition 2024)</td>
 </table>
 
-To handle several requests from each website, You will also need [Redis](https://redis.io/) for persistent caching, free tier is available on [Redis Labs](https://redislabs.com/), You can also choose another adapters as we using [keyv](https://github.com/jaredwray/keyv) Key-value storage with support for multiple backends. When you choosing your own adapter, all data must be stored with `<Buffer>` type.
+To handle several requests from each website with high performance, lustpress utilizes in-memory [Moka](https://github.com/moka-rs/moka) caching with automatic byte-weighted eviction. You can also specify [Redis](https://redis.io/) via `REDIS_URL` for persistent multi-instance caching (with automatic pool connection and in-memory fallback).
 
 ## Installation
 
@@ -103,7 +103,10 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # you must identify your origin, if not set it will use default
-USER_AGENT = "lustpress/8.5.1-alpha Bun/1.4.2"
+USER_AGENT = "lustpress/9.0.0 rustc/1.96.0"
+
+# debug log default is false
+ENABLE_DEBUG_LOG = false
 ```
 
 ### Docker
@@ -120,7 +123,8 @@ docker run -d \
   -e LUSTPRESS_GRAPHQL=true \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/8.5.1-alpha Bun/1.4.2' \
+  -e USER_AGENT='lustpress/9.0.0 rustc/1.96.0' \
+  -e ENABLE_DEBUG_LOG=false \
   ghcr.io/sinkaroid/lustpress:latest
 ```
 
@@ -128,48 +132,48 @@ docker run -d \
 
     git clone https://github.com/sinkaroid/lustpress.git
 
-- Install dependencies
-  - `bun install`
-- Lustpress production
-  - `bun run start:prod`
-- Lustpress testing and hot reload
-  - `bun run start:dev`
+- Run development server (with optional watch)
+  - `cargo dev` (or `cargo watch`)
+- Compile release binary
+  - `cargo build-release`
+- Run production server
+  - `cargo prod`
 
-## Tests
+## Tests & Quality Assurance
 
-Run the following commands to execute tests for each supported source:
+Run the following cargo alias commands to execute tests and static analysis:
 
 ```bash
-# Check whether all supported sites are available for scraping
-bun run test
+# Run all unit tests transparently
+cargo t
 
-# Check whether ph and (maybe the others do..) do Solving challenge in their website
-bun run test:mock
+# Check types and borrow checker across all targets
+cargo typecheck
+
+# Lint with Clippy (strict best practices)
+cargo lint
 
 # Run tests for individual sources
-bun run test:pornhub
-bun run test:xnxx
-bun run test:redtube
-bun run test:xvideos
-bun run test:xhamster
-bun run test:youporn
-bun run test:eporner
-bun run test:txxx
+cargo test-pornhub
+cargo test-xnxx
+cargo test-redtube
+cargo test-xvideos
+cargo test-xhamster
+cargo test-youporn
+cargo test-eporner
+cargo test-txxx
+cargo test-graphql
 ```
 
 ### Start the production server
 
-`bun run start:prod`
+`cargo prod`
 
 ### Running development server
 
-`bun run start:dev`
+`cargo dev`
 
-### Generating playground like swagger from apidoc definition
-
-`bun run build:apidoc`
-
-> To running other tests, you can see object scripts in file `package.json` or modify the `lustpress.test.ts` according your needs
+> For full list of available aliases, check `.cargo/config.toml`.
 
 ## Playground
 
@@ -183,10 +187,10 @@ Start the server with GraphQL enabled:
 
 ```bash
 # On Unix-like systems
-LUSTPRESS_GRAPHQL=true bun run start:dev
+LUSTPRESS_GRAPHQL=true cargo dev
 
 # On Windows (PowerShell)
-$env:LUSTPRESS_GRAPHQL="true"; bun run start:dev
+$env:LUSTPRESS_GRAPHQL="true"; cargo dev
 ```
 
 Accessing endpoint: Send GET or POST requests to `http://localhost:3000/graphql`.
@@ -425,7 +429,7 @@ Pornhub serves a JavaScript challenge page to detect automated requests. Instead
 
 This approach runs in **< 1ms** compared to 5-10s with a headless browser, uses virtually no memory, and is fully **Docker-friendly** — no Chromium installation required.
 
-The solver logic lives in [`src/utils/ph-solver.ts`](src/utils/ph-solver.ts). If Pornhub changes its obfuscation pattern, update the regex patterns in that file.
+The solver logic lives in [`src/fetch.rs`](src/fetch.rs). If Pornhub changes its obfuscation pattern, update the solver logic in that file.
 
 ## Frequently asked questions
 

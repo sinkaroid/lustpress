@@ -15,20 +15,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install
-
       - name: Generate Swagger JSON and HTML
         run: |
-          mkdir public
-          bun run start:dev &
-          sleep 3
-          curl -s http://localhost:3000/docs/json > public/swagger.json
+          mkdir -p public
+          cp resources/swagger.json public/swagger.json
           cat << 'EOF' > public/index.html
           <!DOCTYPE html>
           <html lang="en">

@@ -1,3 +1,4 @@
+# Dependencies & Environment
 /node_modules
 yarn.lock
 package-lock.json
@@ -8,8 +9,21 @@ package-lock.json
 p.ts
 .env
 .idea
-CHANGELOG.md
 theme.zip
-AGENTS.md
 lustpress-express
-*.tsbuildinfo
+*.tsbuildinfo
+
+# Legacy & Tools
+/legacy
+/tools
+
+# Rust
+/target
+**/*.rs.bk
+*.pdb
+
+# PRD, Plan & Smoke Test Docs
+PRD.md
+PENDING_*.md
+MALLOC_ARENA_MAX.md
+SMOKE_TEST*.md
