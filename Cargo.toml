@@ -1,6 +1,6 @@
 [package]
 name = "lustpress"
-version = "9.1.8"
+version = "9.1.9"
 edition = "2024"
 rust-version = "1.96.0"
 authors = ["sinkaroid"]
@@ -9,7 +9,7 @@ description = "Unified REST + GraphQL API for PornHub and other R18 websites"
 
 [profile.release]
 opt-level = 3
-lto = "fat"
+lto = "thin"
 codegen-units = 1
 panic = "abort"
 strip = true
@@ -44,7 +44,7 @@ async-graphql-axum = "7"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 dashmap = "6.0"
-sysinfo = "0.33"
+sysinfo = { version = "0.33", default-features = false, features = ["system", "disk"] }
 
 
 # Error Handling & Utilities
@@ -52,7 +52,6 @@ thiserror = "2"
 dotenvy = "0.15"
 chrono = { version = "0.4", features = ["serde"] }
 url = "2"
-mimalloc = { version = "0.1", default-features = false }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libc = "0.2"

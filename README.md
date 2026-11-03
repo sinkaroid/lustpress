@@ -7,7 +7,7 @@
 	<a href="https://codeclimate.com/github/sinkaroid/lustpress/maintainability"><img src="https://api.codeclimate.com/v1/badges/29a2be78f853f9e3a4a3/maintainability" /></a>
 </p>
 
-Lustpress was originally named Lust and Express (legacy name) and now runs on **Rust** + **Axum**.
+Lustpress was originally named Lust and Express (legacy name).
 The motivation of this project is carry an actionable data related to pornhub and other r18 sites with gather, similar design pattern, endpoint bindings, and consistent structure in mind.
 
 <a href="https://sinkaroid.github.io/lustpress">Playground</a> •

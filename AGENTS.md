@@ -25,8 +25,7 @@ This repository strictly adheres to the **`rust-shapeshift`** engineering discip
 
 1. **Zero-Panic Guarantee**: `#![deny(clippy::unwrap_used, clippy::expect_used)]` is enforced at the root. Always propagate errors using `Result<T, AppError>` or fallback defaults.
 2. **Allocator Hygiene**:
-   - `mimalloc` is set as `#[global_allocator]` in `src/main.rs`.
-   - `ENV MALLOC_ARENA_MAX=2` is enforced in the `Dockerfile`.
+   - Standard system allocator with `ENV MALLOC_ARENA_MAX=2` enforced in `Dockerfile`.
    - Call `crate::util::trim_memory()` in middleware / loops to ensure pages return to the OS kernel.
 3. **Zero-Copy & Pre-Parse Pruning**:
    - Truncate or window-scan byte slices (`bytes.windows(...)`) instead of allocating multi-megabyte `String` heap buffers.

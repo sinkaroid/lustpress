@@ -15,6 +15,7 @@ COPY --from=builder /usr/src/lustpress/target/release/lustpress /app/lustpress
 
 ENV PORT=3000
 ENV MALLOC_ARENA_MAX=2
+ENV TOKIO_WORKER_THREADS=2
 EXPOSE 3000
 
 USER lustpress

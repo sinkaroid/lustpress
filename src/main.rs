@@ -7,11 +7,20 @@ use std::error::Error;
 use tower_http::cors::CorsLayer;
 use tracing::info;
 
-#[global_allocator]
-static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+fn main() -> Result<(), Box<dyn Error>> {
+    let worker_threads = std::env::var("TOKIO_WORKER_THREADS")
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok())
+        .unwrap_or(2);
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+    tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(worker_threads)
+        .enable_all()
+        .build()?
+        .block_on(async_main())
+}
+
+async fn async_main() -> Result<(), Box<dyn Error>> {
     // 1. Load .env if present
     dotenvy::dotenv().ok();
 

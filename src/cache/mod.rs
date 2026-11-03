@@ -64,14 +64,17 @@ impl CacheService {
     }
 
     fn create_in_memory_backend(max_bytes: u64, ttl: Duration) -> CacheBackend {
-        // Byte-bounded cache using weigher (Fixes PRD N2 & Task P1-4)
-        // Limits total raw HTML and string payload footprint in RAM
+        // Weight in KiB (1 unit = 1024 bytes) to prevent Moka W-TinyLFU FrequencySketch
+        // from pre-allocating an 8-16 MB table on startup for a 16M entry count.
+        // For 16 MiB budget: max_capacity is 16,384 KiB -> sketch table is only 8 KB.
+        let max_kib = max_bytes.div_ceil(1024).max(1);
         let cache = MokaCache::builder()
             .weigher(|k: &String, v: &Vec<u8>| {
-                // Total bytes: payload + URL key string + struct overhead
-                (v.len() + k.len() + 64) as u32
+                let total_bytes = v.len() + k.len() + 64;
+                total_bytes.div_ceil(1024) as u32
             })
-            .max_capacity(max_bytes)
+            .max_capacity(max_kib)
+            .initial_capacity(16)
             .time_to_live(ttl)
             .build();
         CacheBackend::InMemory(cache)

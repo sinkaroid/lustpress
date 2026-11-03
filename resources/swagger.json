@@ -3,7 +3,7 @@
   "info": {
     "title": "Lustpress API",
     "description": "Unified REST + GraphQL API for PornHub and other R18 platforms",
-    "version": "9.1.8"
+    "version": "9.1.9"
   },
   "paths": {
     "/metrics": {
