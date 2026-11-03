@@ -42,8 +42,11 @@ impl AppState {
             .connect_timeout(Duration::from_secs(config.upstream_connect_timeout_secs))
             .timeout(Duration::from_secs(config.upstream_timeout_secs))
             .redirect(reqwest::redirect::Policy::limited(5))
-            .pool_max_idle_per_host(2)
-            .pool_idle_timeout(Duration::from_secs(15))
+            .pool_max_idle_per_host(10)
+            .pool_idle_timeout(Duration::from_secs(90))
+            .tcp_keepalive(Duration::from_secs(60))
+            .gzip(true)
+            .deflate(true)
             .build()
             .map_err(|e| format!("Failed to initialize reqwest client: {e}"))?;
 

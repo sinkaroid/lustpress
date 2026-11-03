@@ -1,56 +1,70 @@
 use crate::error::AppError;
 use crate::model::{SearchItem, SearchResponse, VideoDetails, VideoResponse};
-use crate::util::second_to_minute;
+use crate::util::{second_to_minute, static_selector};
 use regex::Regex;
 use scraper::{Html, Selector};
 use serde::Deserialize;
 use std::sync::LazyLock;
 
 static SEL_OG_URL: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:url']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:url']"));
 static SEL_OG_TITLE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:title']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:title']"));
 static SEL_OG_IMAGE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:image']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:image']"));
 static SEL_OG_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:duration']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:duration']"));
 static SEL_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div#v-views strong.mobile-hide").unwrap());
-static SEL_RATING: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.rating-total-txt").unwrap());
+    LazyLock::new(|| static_selector("div#v-views strong.mobile-hide"));
+static SEL_RATING: LazyLock<Selector> = LazyLock::new(|| static_selector("span.rating-total-txt"));
 static SEL_JSON_LD: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("script[type='application/ld+json']").unwrap());
-static SEL_UPVOTE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.rating-good-nbr").unwrap());
-static SEL_DOWNVOTE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.rating-bad-nbr").unwrap());
+    LazyLock::new(|| static_selector("script[type='application/ld+json']"));
+static SEL_UPVOTE: LazyLock<Selector> = LazyLock::new(|| static_selector("span.rating-good-nbr"));
+static SEL_DOWNVOTE: LazyLock<Selector> = LazyLock::new(|| static_selector("span.rating-bad-nbr"));
 static SEL_TAGS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("a.is-keyword.btn.btn-default").unwrap());
-static SEL_MODELS: LazyLock<Selector> = LazyLock::new(|| Selector::parse("li.model a").unwrap());
+    LazyLock::new(|| static_selector("a.is-keyword.btn.btn-default"));
+static SEL_MODELS: LazyLock<Selector> = LazyLock::new(|| static_selector("li.model a"));
 static SEL_EMBED_INPUT: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("input#copy-video-embed").unwrap());
+    LazyLock::new(|| static_selector("input#copy-video-embed"));
 
 static SEL_SEARCH_BLOCK: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.mozaique.cust-nb-cols div.thumb").unwrap());
+    LazyLock::new(|| static_selector("div.mozaique.cust-nb-cols div.thumb"));
 static SEL_SEARCH_THUMB_UNDER: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.thumb-under").unwrap());
-static SEL_SEARCH_A: LazyLock<Selector> = LazyLock::new(|| Selector::parse("a").unwrap());
-static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("img").unwrap());
-static SEL_SEARCH_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.duration").unwrap());
+    LazyLock::new(|| static_selector("div.thumb-under"));
+static SEL_SEARCH_A: LazyLock<Selector> = LazyLock::new(|| static_selector("a"));
+static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| static_selector("img"));
+static SEL_SEARCH_DURATION: LazyLock<Selector> = LazyLock::new(|| static_selector("span.duration"));
 
 static RE_THUMB_SLIDE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"html5player\.setThumbSlideBig\((?:'|")?(.*?)(?:'|")?\)"#).unwrap()
+    match Regex::new(r#"html5player\.setThumbSlideBig\((?:'|")?(.*?)(?:'|")?\)"#) {
+        Ok(r) => r,
+        Err(e) => panic!("Invalid regex: {e}"),
+    }
 });
-static RE_THUMB_169: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"html5player\.setThumbUrl169\((?:'|")?(.*?)(?:'|")?\)"#).unwrap()
-});
+static RE_THUMB_169: LazyLock<Regex> =
+    LazyLock::new(
+        || match Regex::new(r#"html5player\.setThumbUrl169\((?:'|")?(.*?)(?:'|")?\)"#) {
+            Ok(r) => r,
+            Err(e) => panic!("Invalid regex: {e}"),
+        },
+    );
 static RE_VIDEO_URL: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"html5player\.setVideoUrlHigh\((?:'|")?(.*?)(?:'|")?\)"#).unwrap()
+    match Regex::new(r#"html5player\.setVideoUrlHigh\((?:'|")?(.*?)(?:'|")?\)"#) {
+        Ok(r) => r,
+        Err(e) => panic!("Invalid regex: {e}"),
+    }
 });
 static RE_VIDEO_RELATED: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r#"(?s)var video_related\s*=\s*(\[.*?\]);"#).unwrap());
-static RE_IFRAME_SRC: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"src="([^"]+)""#).unwrap());
+    LazyLock::new(
+        || match Regex::new(r#"(?s)var video_related\s*=\s*(\[.*?\]);"#) {
+            Ok(r) => r,
+            Err(e) => panic!("Invalid regex: {e}"),
+        },
+    );
+static RE_IFRAME_SRC: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r#"src="([^"]+)""#) {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
 
 #[derive(Debug, Deserialize)]
 pub struct XvideosRelatedRaw {

@@ -27,6 +27,14 @@ pub fn trim_memory() {
     }
 }
 
+/// Helper to compile static CSS selectors at startup without `.unwrap()` at call sites
+pub fn static_selector(selector_str: &'static str) -> scraper::Selector {
+    match scraper::Selector::parse(selector_str) {
+        Ok(s) => s,
+        Err(err) => panic!("Invalid static CSS selector '{selector_str}': {err:?}"),
+    }
+}
+
 /// Validates that an ID query is safe against URL query injection / path traversal (PRD J6)
 pub fn is_valid_id(id: &str) -> bool {
     let clean = id.trim();

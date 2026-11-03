@@ -1,38 +1,36 @@
 use crate::error::AppError;
 use crate::model::{SearchItem, SearchResponse, VideoDetails, VideoResponse};
-use crate::util::second_to_minute;
+use crate::util::{second_to_minute, static_selector};
 use scraper::{Html, Selector};
 use std::sync::LazyLock;
 
 static SEL_CANONICAL: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("link[rel='canonical']").unwrap());
+    LazyLock::new(|| static_selector("link[rel='canonical']"));
 static SEL_OG_TITLE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:title']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:title']"));
 static SEL_OG_IMAGE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:image']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:image']"));
 static SEL_OG_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:video:duration']").unwrap());
-static SEL_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.video_view_count").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:video:duration']"));
+static SEL_VIEWS: LazyLock<Selector> = LazyLock::new(|| static_selector("span.video_view_count"));
 static SEL_RATING: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.rating_percent.js_rating_percent").unwrap());
+    LazyLock::new(|| static_selector("div.rating_percent.js_rating_percent"));
 static SEL_PUBLISH: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.video-infobox-date-added").unwrap());
+    LazyLock::new(|| static_selector("span.video-infobox-date-added"));
 static SEL_PLAYER: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[name='twitter:player']").unwrap());
+    LazyLock::new(|| static_selector("meta[name='twitter:player']"));
 static SEL_TAGS: LazyLock<Selector> = LazyLock::new(|| {
-    Selector::parse("a.item.video_carousel_item.video_carousel_category, a.item.video_carousel_item.video_carousel_tag").unwrap()
+    static_selector(
+        "a.item.video_carousel_item.video_carousel_category, a.item.video_carousel_item.video_carousel_tag",
+    )
 });
 static SEL_MODELS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.pornstar-name.pornstarPopupWrapper a").unwrap());
+    LazyLock::new(|| static_selector("div.pornstar-name.pornstarPopupWrapper a"));
 
-static SEL_SEARCH_LINKS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("a.video_link").unwrap());
-static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("img").unwrap());
-static SEL_SEARCH_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.duration").unwrap());
-static SEL_SEARCH_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.video_count").unwrap());
+static SEL_SEARCH_LINKS: LazyLock<Selector> = LazyLock::new(|| static_selector("a.video_link"));
+static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| static_selector("img"));
+static SEL_SEARCH_DURATION: LazyLock<Selector> = LazyLock::new(|| static_selector("span.duration"));
+static SEL_SEARCH_VIEWS: LazyLock<Selector> = LazyLock::new(|| static_selector("span.video_count"));
 
 pub fn parse_redtube_get(body: &[u8]) -> Result<VideoResponse, AppError> {
     let html_str = String::from_utf8_lossy(body);

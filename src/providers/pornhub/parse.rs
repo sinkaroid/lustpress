@@ -1,40 +1,35 @@
 use crate::error::AppError;
 use crate::model::{SearchItem, SearchResponse, VideoDetails, VideoResponse};
-use crate::util::second_to_minute;
+use crate::util::{second_to_minute, static_selector};
 use scraper::{Html, Selector};
 use std::sync::LazyLock;
 
 static SEL_CANONICAL: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("link[rel='canonical']").unwrap());
+    LazyLock::new(|| static_selector("link[rel='canonical']"));
 static SEL_OG_TITLE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:title']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:title']"));
 static SEL_OG_IMAGE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:image']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:image']"));
 static SEL_OG_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='video:duration']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='video:duration']"));
 static SEL_OG_VIDEO: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:video:url']").unwrap());
-static SEL_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.views > span.count").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:video:url']"));
+static SEL_VIEWS: LazyLock<Selector> = LazyLock::new(|| static_selector("div.views > span.count"));
 static SEL_RATING: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.ratingPercent > span.percent").unwrap());
-static SEL_VIDEO_INFO: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.videoInfo").unwrap());
-static SEL_UPVOTE: LazyLock<Selector> = LazyLock::new(|| Selector::parse("span.votesUp").unwrap());
-static SEL_DOWNVOTE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.votesDown").unwrap());
-static SEL_TAGS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.video-info-row a").unwrap());
+    LazyLock::new(|| static_selector("div.ratingPercent > span.percent"));
+static SEL_VIDEO_INFO: LazyLock<Selector> = LazyLock::new(|| static_selector("div.videoInfo"));
+static SEL_UPVOTE: LazyLock<Selector> = LazyLock::new(|| static_selector("span.votesUp"));
+static SEL_DOWNVOTE: LazyLock<Selector> = LazyLock::new(|| static_selector("span.votesDown"));
+static SEL_TAGS: LazyLock<Selector> = LazyLock::new(|| static_selector("div.video-info-row a"));
 static SEL_MODELS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.pornstarsWrapper.js-pornstarsWrapper a").unwrap());
+    LazyLock::new(|| static_selector("div.pornstarsWrapper.js-pornstarsWrapper a"));
 
-static SEL_SEARCH_WRAP: LazyLock<Selector> = LazyLock::new(|| Selector::parse("div.wrap").unwrap());
-static SEL_SEARCH_A: LazyLock<Selector> = LazyLock::new(|| Selector::parse("a").unwrap());
-static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("img").unwrap());
-static SEL_SEARCH_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("var.duration").unwrap());
+static SEL_SEARCH_WRAP: LazyLock<Selector> = LazyLock::new(|| static_selector("div.wrap"));
+static SEL_SEARCH_A: LazyLock<Selector> = LazyLock::new(|| static_selector("a"));
+static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| static_selector("img"));
+static SEL_SEARCH_DURATION: LazyLock<Selector> = LazyLock::new(|| static_selector("var.duration"));
 static SEL_SEARCH_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.videoDetailsBlock span.views").unwrap());
+    LazyLock::new(|| static_selector("div.videoDetailsBlock span.views"));
 
 pub fn parse_pornhub_get(body: &[u8]) -> Result<VideoResponse, AppError> {
     let html_str = String::from_utf8_lossy(body);
@@ -249,6 +244,7 @@ pub fn parse_pornhub_search(body: &[u8], url: &str) -> Result<SearchResponse, Ap
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
 mod tests {
     use super::*;
 

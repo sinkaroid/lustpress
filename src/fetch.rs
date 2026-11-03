@@ -58,19 +58,45 @@ pub fn least_factor(n: i64) -> i64 {
 
 use std::sync::LazyLock;
 
-static RE_COMMENT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"/\*[\s\S]*?\*/").unwrap());
-static RE_P: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"var p=(\d+);").unwrap());
-static RE_S: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"var s=(\d+);").unwrap());
+static RE_COMMENT: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r"/\*[\s\S]*?\*/") {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
+static RE_P: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r"var p=(\d+);") {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
+static RE_S: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r"var s=(\d+);") {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
 static RE_EXTRA: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"document\.cookie="KEY="\+n\+"\*"\+p/n\+":(?:\+s\+:|")(\d+):1"#).unwrap()
+    match Regex::new(r#"document\.cookie="KEY="\+n\+"\*"\+p/n\+":(?:\+s\+:|")(\d+):1"#) {
+        Ok(r) => r,
+        Err(e) => panic!("Invalid regex: {e}"),
+    }
 });
-static RE_EXTRA2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#":(\d+):1;path=/;"#).unwrap());
+static RE_EXTRA2: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r#":(\d+):1;path=/;"#) {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
 static RE_GO: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"function go\(\)\s*\{([\s\S]+?)n=leastFactor\(p\);").unwrap());
+    LazyLock::new(
+        || match Regex::new(r"function go\(\)\s*\{([\s\S]+?)n=leastFactor\(p\);") {
+            Ok(r) => r,
+            Err(e) => panic!("Invalid regex: {e}"),
+        },
+    );
 static RE_IFELSE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"if\(\(s>>(\d+)\)&1\)p(\+|-)=(\d+)\*(\d+);elsep(\+|-)=(\d+)\*(\d+);").unwrap()
+    match Regex::new(r"if\(\(s>>(\d+)\)&1\)p(\+|-)=(\d+)\*(\d+);elsep(\+|-)=(\d+)\*(\d+);") {
+        Ok(r) => r,
+        Err(e) => panic!("Invalid regex: {e}"),
+    }
 });
-static RE_ADJ: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"p(\+|-)=(\d+);").unwrap());
+static RE_ADJ: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r"p(\+|-)=(\d+);") {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
 
 pub fn solve_ph_challenge(html: &str) -> Result<String, String> {
     // Only isolate the script tag containing leastFactor (~1-2 KB), avoid cloning the entire 2 MB HTML

@@ -1,32 +1,38 @@
 use crate::error::AppError;
 use crate::model::{SearchItem, SearchResponse, VideoDetails, VideoResponse};
+use crate::util::static_selector;
 use regex::Regex;
 use scraper::{Html, Selector};
 use serde::Deserialize;
 use std::sync::LazyLock;
 
 static SEL_CANONICAL: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("link[rel='canonical']").unwrap());
+    LazyLock::new(|| static_selector("link[rel='canonical']"));
 static SEL_OG_TITLE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:title']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:title']"));
 static SEL_OG_IMAGE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:image']").unwrap());
-static SEL_INITIALS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("#initials-script").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:image']"));
+static SEL_INITIALS: LazyLock<Selector> = LazyLock::new(|| static_selector("#initials-script"));
 static SEL_DATE_CONTAINER: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.entity-info-container__date").unwrap());
+    LazyLock::new(|| static_selector("div.entity-info-container__date"));
 
 static SEL_SEARCH_LINKS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("a.video-thumb__image-container").unwrap());
+    LazyLock::new(|| static_selector("a.video-thumb__image-container"));
 static SEL_SEARCH_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.video-thumb-views").unwrap());
+    LazyLock::new(|| static_selector("div.video-thumb-views"));
 static SEL_SEARCH_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span[data-role='video-duration']").unwrap());
-static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| Selector::parse("img").unwrap());
+    LazyLock::new(|| static_selector("span[data-role='video-duration']"));
+static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| static_selector("img"));
 
 static RE_DURATION: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r#""duration"\s*:\s*(\d+)"#).unwrap());
-static RE_VIEWS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#""views"\s*:\s*(\d+)"#).unwrap());
+    LazyLock::new(|| match Regex::new(r#""duration"\s*:\s*(\d+)"#) {
+        Ok(r) => r,
+        Err(e) => panic!("Invalid regex: {e}"),
+    });
+static RE_VIEWS: LazyLock<Regex> = LazyLock::new(|| match Regex::new(r#""views"\s*:\s*(\d+)"#) {
+    Ok(r) => r,
+    Err(e) => panic!("Invalid regex: {e}"),
+});
 
 #[derive(Debug, Deserialize)]
 pub struct XhamsterTag {

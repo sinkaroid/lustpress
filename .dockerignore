@@ -6,8 +6,11 @@ AGENTS.md
 .agents
 .git
 .github
+.vscode
 .env
-.env.schema
+.env.*
 node_modules
 *.md
 LICENSE
+resources/project
+resources/project/images

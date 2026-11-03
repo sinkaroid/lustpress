@@ -220,6 +220,7 @@ pub fn parse_eporner_related(body: &[u8], url: &str) -> Result<SearchResponse, A
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
 mod tests {
     use super::*;
 
