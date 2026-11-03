@@ -99,6 +99,9 @@ pub fn solve_ph_challenge(html: &str) -> Result<String, String> {
     let mut p: i64 = p_cap[1]
         .parse()
         .map_err(|e: std::num::ParseIntError| e.to_string())?;
+    if !(0..=100_000_000_000).contains(&p) {
+        return Err(format!("Challenge parameter p={p} exceeds safety limit"));
+    }
     let s: i64 = s_cap[1]
         .parse()
         .map_err(|e: std::num::ParseIntError| e.to_string())?;
@@ -309,8 +312,9 @@ impl FetchService {
             .map_err(|e| AppError::Internal(e.to_string()))?
             .to_vec();
 
-        // Check if Pornhub challenge appeared on target video page
-        if is_pornhub && String::from_utf8_lossy(&bytes).contains("leastFactor") {
+        // Check if Pornhub challenge appeared on target video page (zero-allocation byte window check)
+        let has_challenge = bytes.windows(11).any(|w| w == b"leastFactor");
+        if is_pornhub && has_challenge {
             info!("Pornhub challenge on target page. Re-authenticating...");
             // Invalidate cookies
             {

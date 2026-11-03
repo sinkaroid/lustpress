@@ -3,7 +3,7 @@ pub mod parse;
 use crate::error::{AppError, SafeQuery};
 use crate::model::{SearchResponse, VideoResponse};
 use crate::state::AppState;
-use crate::util::encode_query;
+use crate::util::{encode_query, is_valid_id};
 use axum::{Json, Router, extract::State, routing::get};
 use serde::Deserialize;
 
@@ -22,8 +22,8 @@ pub async fn get_handler(
     State(state): State<AppState>,
     SafeQuery(query): SafeQuery<IdQuery>,
 ) -> Result<Json<VideoResponse>, AppError> {
-    if query.id.is_empty() {
-        return Err(AppError::Validation("Parameter id is required".to_string()));
+    if !is_valid_id(&query.id) {
+        return Err(AppError::Validation("Invalid video ID format".to_string()));
     }
     let url = format!(
         "https://www.redtube.com/{}",
@@ -61,8 +61,8 @@ pub async fn related_handler(
     State(state): State<AppState>,
     SafeQuery(query): SafeQuery<IdQuery>,
 ) -> Result<Json<SearchResponse>, AppError> {
-    if query.id.is_empty() {
-        return Err(AppError::Validation("Parameter id is required".to_string()));
+    if !is_valid_id(&query.id) {
+        return Err(AppError::Validation("Invalid video ID format".to_string()));
     }
     let url = format!(
         "https://www.redtube.com/{}",

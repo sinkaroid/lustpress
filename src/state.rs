@@ -19,13 +19,13 @@ pub struct AppState {
     pub config: Arc<Config>,
     pub cache: Arc<CacheService>,
     pub fetch: Arc<FetchService>,
-    geo_cache: Arc<RwLock<Option<(String, Instant)>>>,
+    geo_cache: Arc<RwLock<Option<(String, Instant, Duration)>>>,
 }
 
 impl AppState {
     pub async fn new(config: Config) -> Result<Self, String> {
         let cache = CacheService::new(
-            config.cache_max_capacity,
+            config.cache_max_bytes,
             config.expire_cache_hours,
             config.redis_url.as_deref(),
         )?;
@@ -57,15 +57,12 @@ impl AppState {
         })
     }
 
-    /// Cache-first Geo IP info (Fixes J1 and N3: 30 min success TTL, fast failure)
+    /// Cache-first Geo IP info (Fixes J1 and N3: 30 min success TTL, 30 sec failure TTL)
     pub async fn get_server_location(&self) -> String {
         // 1. Fast read-lock check
         {
             let guard = self.geo_cache.read().await;
-            if let Some((loc, _)) = guard
-                .as_ref()
-                .filter(|(_, t)| t.elapsed() < Duration::from_secs(1800))
-            {
+            if let Some((loc, ..)) = guard.as_ref().filter(|(_, t, ttl)| t.elapsed() < *ttl) {
                 return loc.clone();
             }
         }
@@ -91,16 +88,24 @@ impl AppState {
             Err(_) => "Unknown, Unknown".to_string(),
         };
 
+        // Short negative TTL for failures (30s) vs success TTL (30 mins) (PRD N3)
+        let is_failure = loc == "Unknown, Unknown";
+        let ttl = if is_failure {
+            Duration::from_secs(30)
+        } else {
+            Duration::from_secs(1800)
+        };
+
         // 3. Acquire write lock only to store value (double-checked to prevent race overwrite)
         let mut guard = self.geo_cache.write().await;
-        if let Some((existing_loc, _)) = guard
+        if let Some((existing_loc, _, _)) = guard
             .as_ref()
-            .filter(|(_, t)| t.elapsed() < Duration::from_secs(1800))
+            .filter(|(_, t, existing_ttl)| t.elapsed() < *existing_ttl)
         {
             return existing_loc.clone();
         }
 
-        *guard = Some((loc.clone(), Instant::now()));
+        *guard = Some((loc.clone(), Instant::now(), ttl));
         loc
     }
 }

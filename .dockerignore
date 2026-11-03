@@ -1,6 +1,7 @@
 target
 tools/**/target
 legacy
+AGENTS.md
 .agent
 .agents
 .git
