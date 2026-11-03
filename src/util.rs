@@ -21,7 +21,7 @@ pub fn format_locale_date() -> String {
 /// Release unused glibc allocator heap pages back to the Linux kernel
 #[inline]
 pub fn trim_memory() {
-    #[cfg(target_os = "linux")]
+    #[cfg(all(target_os = "linux", target_env = "gnu"))]
     unsafe {
         libc::malloc_trim(0);
     }

@@ -305,7 +305,5 @@ pub async fn telemetry_middleware(req: Request<Body>, next: Next) -> Response {
         .duration_sum_micros
         .fetch_add(elapsed.as_micros() as u64, Ordering::Relaxed);
 
-    crate::util::trim_memory();
-
     res
 }

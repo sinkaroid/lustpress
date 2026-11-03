@@ -1,6 +1,6 @@
 [package]
 name = "lustpress"
-version = "9.1.6"
+version = "9.1.7"
 edition = "2024"
 rust-version = "1.96.0"
 authors = ["sinkaroid"]
@@ -9,8 +9,9 @@ description = "Unified REST + GraphQL API for PornHub and other R18 websites"
 
 [profile.release]
 opt-level = 3
-lto = "thin"
+lto = "fat"
 codegen-units = 1
+panic = "abort"
 strip = true
 
 [dependencies]

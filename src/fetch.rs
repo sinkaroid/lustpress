@@ -263,7 +263,6 @@ impl FetchService {
             }
         };
 
-        crate::util::trim_memory();
 
         *guard = Some((final_cookies.clone(), Instant::now()));
         Ok(final_cookies)
@@ -336,12 +335,10 @@ impl FetchService {
                 .map_err(|e| AppError::Internal(e.to_string()))?
                 .to_vec();
             self.cache.set(url, retry_bytes.clone()).await;
-            crate::util::trim_memory();
             return Ok(retry_bytes);
         }
 
         self.cache.set(url, bytes.clone()).await;
-        crate::util::trim_memory();
         Ok(bytes)
     }
 }

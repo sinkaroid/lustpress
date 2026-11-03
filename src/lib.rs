@@ -1,3 +1,5 @@
+#![recursion_limit = "512"]
+
 pub mod cache;
 pub mod config;
 pub mod error;

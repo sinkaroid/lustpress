@@ -59,6 +59,7 @@ impl AppState {
 
     /// Cache-first Geo IP info (Fixes J1 and N3: 30 min success TTL, fast failure)
     pub async fn get_server_location(&self) -> String {
+        // 1. Fast read-lock check
         {
             let guard = self.geo_cache.read().await;
             if let Some((loc, _)) = guard
@@ -69,15 +70,7 @@ impl AppState {
             }
         }
 
-        let mut guard = self.geo_cache.write().await;
-        if let Some((loc, _)) = guard
-            .as_ref()
-            .filter(|(_, t)| t.elapsed() < Duration::from_secs(1800))
-        {
-            return loc.clone();
-        }
-
-        // Fetch outside lock
+        // 2. Fetch outside of any locks to avoid blocking worker threads across .await
         let loc = match self
             .fetch
             .client()
@@ -97,6 +90,15 @@ impl AppState {
             }
             Err(_) => "Unknown, Unknown".to_string(),
         };
+
+        // 3. Acquire write lock only to store value (double-checked to prevent race overwrite)
+        let mut guard = self.geo_cache.write().await;
+        if let Some((existing_loc, _)) = guard
+            .as_ref()
+            .filter(|(_, t)| t.elapsed() < Duration::from_secs(1800))
+        {
+            return existing_loc.clone();
+        }
 
         *guard = Some((loc.clone(), Instant::now()));
         loc

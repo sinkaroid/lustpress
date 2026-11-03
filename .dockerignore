@@ -2,7 +2,7 @@ target
 tools/**/target
 legacy
 .agent
-.agetns
+.agents
 .git
 .github
 .env

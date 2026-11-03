@@ -11,6 +11,8 @@ pub type AppSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
 pub fn build_schema(state: AppState) -> AppSchema {
     Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
         .data(state)
+        .limit_depth(5)
+        .limit_complexity(100)
         .finish()
 }
 
