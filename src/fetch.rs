@@ -263,7 +263,6 @@ impl FetchService {
             }
         };
 
-
         *guard = Some((final_cookies.clone(), Instant::now()));
         Ok(final_cookies)
     }
