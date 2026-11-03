@@ -1,0 +1,26 @@
+[alias]
+# Development & Running (matches start, start:dev, start:prod, build)
+dev = "run"
+watch = "watch -x run"
+start = "run --release"
+prod = "run --release"
+build-release = "build --release"
+
+# Verification, Lints & Static Analysis (matches typecheck, lint, lint:fix)
+typecheck = "check --all-targets"
+lint = "clippy --all-targets -- -D warnings"
+lint-fix = "clippy --fix --allow-dirty --allow-staged"
+fmt-check = "fmt --check"
+
+# Tests & Sub-suites (matches test, test:*, test:rest:all, test:graphql)
+t = "test -- --nocapture"
+test-all = "test -- --nocapture"
+test-pornhub = "test pornhub -- --nocapture"
+test-xnxx = "test xnxx -- --nocapture"
+test-redtube = "test redtube -- --nocapture"
+test-xvideos = "test xvideos -- --nocapture"
+test-xhamster = "test xhamster -- --nocapture"
+test-youporn = "test youporn -- --nocapture"
+test-eporner = "test eporner -- --nocapture"
+test-txxx = "test txxx -- --nocapture"
+test-graphql = "test graphql -- --nocapture"

@@ -1,8 +1,12 @@
-node_modules
-npm-debug.log
+target
+tools/**/target
+legacy
+.agent
+.agents
 .git
 .github
-resources
-**/*.md
-LICENSE
+.env
 .env.schema
+node_modules
+*.md
+LICENSE

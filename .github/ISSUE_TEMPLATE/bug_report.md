@@ -16,10 +16,11 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Node version [node -v]
- - Typescript version [tsc -v]
+**Environment (please complete the following information):**
+ - OS: [e.g. Linux, Windows, macOS]
+ - Rust version: [rustc -V]
+ - Cargo version: [cargo -V]
+ - Docker (if applicable): [docker -v]
 
 **Additional context**
 Add any other context about the problem here.

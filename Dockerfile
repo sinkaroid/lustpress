@@ -1,26 +1,19 @@
-FROM oven/bun:1.4.2-alpine AS base
-WORKDIR /srv/app
+FROM rust:1.96-slim-bookworm as builder
+RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
-# 1. Install production dependencies only
-FROM base AS deps
-COPY package.json bun.lock ./
-RUN bun install --production
-
-# 2. Builder stage to compile TypeScript
-FROM base AS builder
-COPY package.json bun.lock ./
-RUN bun install
+WORKDIR /usr/src/lustpress
 COPY . .
-RUN bun run build
+RUN cargo build --release
 
-# 3. Final release stage
-FROM base AS release
-COPY --from=deps /srv/app/node_modules ./node_modules
-COPY --from=builder /srv/app/build ./build
-COPY package.json ./
+# Runtime stage
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
 
-# Run as non-root user
-USER bun
+WORKDIR /app
+COPY --from=builder /usr/src/lustpress/target/release/lustpress /app/lustpress
+
+ENV PORT=3000
+ENV MALLOC_ARENA_MAX=2
 EXPOSE 3000
 
-CMD ["bun", "run", "start"]
+CMD ["/app/lustpress"]

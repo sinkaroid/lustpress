@@ -1,4 +1,4 @@
-name: Run build
+name: CI
 
 on:
   push:
@@ -9,25 +9,35 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          persist-credentials: false
+          components: clippy, rustfmt
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
-        with:
-          bun-version: latest
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
 
-      - name: Install dependencies
-        run: bun install
+      - name: Format check
+        run: cargo fmt --check
 
-      - name: Check lint
-        run: bun run lint
+      - name: Typecheck
+        run: cargo check --all-targets
 
-      - name: Build
-        run: bun run build
+      - name: Clippy lints
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Unit tests
+        run: cargo test -- --nocapture
+
+      - name: Build release
+        run: cargo build --release
