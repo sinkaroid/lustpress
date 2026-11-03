@@ -1,5 +1,5 @@
 <div align="center">
-<a href="http://localhost:3000/"><img width="500" src="resources/project/images/lustpress-node_1.png" alt="lustpress"></a>
+<a href="http://localhost:3000/"><img width="500" src="resources/project/images/lustpress-node_1.webp" alt="lustpress"></a>
 
 <h4 align="center">Unified REST + GraphQL API for PornHub and other R18 websites</h4>
 <p align="center">
@@ -18,7 +18,7 @@ The motivation of this project is carry an actionable data related to pornhub an
 
 ---
 
-<a href="http://localhost:3000/"><img align="right" src="resources/project/images/nun.png" width="320"></a>
+<a href="http://localhost:3000/"><img align="right" src="resources/project/images/nun.webp" width="320"></a>
 
 - [Lustpress](#)
   - [The problem](#the-problem)
@@ -83,10 +83,13 @@ Some tests may fail in CI environments because certain websites restrict or bloc
 ## Prerequisites
 
 <table>
-	<td><b>NOTE:</b> Rust 1.96.0 or higher (Rust Edition 2024)</td>
+	<td><b>NOTE:</b> Rust 1.96.0 or higher / or simply just use docker</td>
 </table>
 
-To handle several requests from each website with high performance, lustpress utilizes in-memory [Moka](https://github.com/moka-rs/moka) caching with automatic byte-weighted eviction. You can also specify [Redis](https://redis.io/) via `REDIS_URL` for persistent multi-instance caching (with automatic pool connection and in-memory fallback).
+To handle several requests, You also need [Redis](https://redis.io/) for persistent caching:
+
+- You can use `docker pull ghcr.io/sinkaroid/lustpress-redis:latest` for full control.
+- If just small usage or experimenting, You can get [redis.io/try-free](https://redis.io/try-free/) for demo and free tier available on [Redis Labs](https://redislabs.com/).
 
 ## Installation
 
@@ -103,7 +106,7 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # you must identify your origin, if not set it will use default
-USER_AGENT = "lustpress/9.0.0 rustc/1.96.0"
+USER_AGENT = "lustpress/9.1.0 rustc/1.96.0"
 
 # debug log default is false
 ENABLE_DEBUG_LOG = false
@@ -123,7 +126,7 @@ docker run -d \
   -e LUSTPRESS_GRAPHQL=true \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e USER_AGENT='lustpress/9.0.0 rustc/1.96.0' \
+  -e USER_AGENT='lustpress/9.1.0 rustc/1.96.0' \
   -e ENABLE_DEBUG_LOG=false \
   ghcr.io/sinkaroid/lustpress:latest
 ```

@@ -9,6 +9,7 @@ pub struct Config {
     pub expire_cache_hours: u64,
     pub user_agent: String,
     pub cache_max_capacity: u64,
+    pub cache_max_bytes: u64,
     pub upstream_connect_timeout_secs: u64,
     pub upstream_timeout_secs: u64,
     pub rate_limit_enabled: bool,
@@ -50,6 +51,22 @@ impl Config {
         let user_agent = env::var("USER_AGENT")
             .unwrap_or_else(|_| format!("lustpress/{}", env!("CARGO_PKG_VERSION")));
 
+        let cache_max_bytes = match env::var("CACHE_MAX_BYTES") {
+            Ok(val) => val
+                .trim()
+                .parse::<u64>()
+                .map_err(|_| format!("Invalid CACHE_MAX_BYTES: '{}' must be an integer", val))?,
+            Err(_) => match env::var("CACHE_MAX_MB") {
+                Ok(val) => {
+                    let mb = val.trim().parse::<u64>().map_err(|_| {
+                        format!("Invalid CACHE_MAX_MB: '{}' must be an integer", val)
+                    })?;
+                    mb * 1024 * 1024
+                }
+                Err(_) => 16 * 1024 * 1024, // Bounded to 16 MiB max byte-budget (PRD P1-2 / P1-4, Issue N2)
+            },
+        };
+
         let cache_max_capacity =
             match env::var("CACHE_MAX_ENTRIES").or_else(|_| env::var("CACHE_MAX_CAPACITY")) {
                 Ok(val) => {
@@ -58,7 +75,7 @@ impl Config {
                     })?;
                     parsed.min(5000)
                 }
-                Err(_) => 1000, // Bounded to 1000 entries max to prevent memory growth leaks (matching jandapress)
+                Err(_) => 1000,
             };
 
         let upstream_connect_timeout_secs = match env::var("UPSTREAM_CONNECT_TIMEOUT_SECS") {
@@ -110,6 +127,7 @@ impl Config {
             expire_cache_hours,
             user_agent,
             cache_max_capacity,
+            cache_max_bytes,
             upstream_connect_timeout_secs,
             upstream_timeout_secs,
             rate_limit_enabled,
@@ -126,6 +144,7 @@ impl Config {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
 mod tests {
     use super::*;
 
@@ -145,6 +164,7 @@ mod tests {
                 assert!(!config.enable_debug_log);
                 assert_eq!(config.expire_cache_hours, 1);
                 assert_eq!(config.cache_max_capacity, 1000);
+                assert_eq!(config.cache_max_bytes, 16 * 1024 * 1024);
                 let expected = format!("lustpress/{}", env!("CARGO_PKG_VERSION"));
                 assert_eq!(config.user_agent, expected);
             },

@@ -1,41 +1,38 @@
 use crate::error::AppError;
 use crate::model::{SearchItem, SearchResponse, VideoDetails, VideoResponse};
-use crate::util::second_to_minute;
+use crate::util::{second_to_minute, static_selector};
 use scraper::{Html, Selector};
 use std::sync::LazyLock;
 
 static SEL_CANONICAL: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("link[rel='canonical']").unwrap());
+    LazyLock::new(|| static_selector("link[rel='canonical']"));
 static SEL_OG_TITLE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:title']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:title']"));
 static SEL_OG_IMAGE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='og:image']").unwrap());
+    LazyLock::new(|| static_selector("meta[property='og:image']"));
 static SEL_OG_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("meta[property='video:duration']").unwrap());
-static SEL_PUBLISH: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.publishedDate").unwrap());
-static SEL_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.tm_infoValue").unwrap());
-static SEL_RATING: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("span.tm_rating_percent").unwrap());
+    LazyLock::new(|| static_selector("meta[property='video:duration']"));
+static SEL_PUBLISH: LazyLock<Selector> = LazyLock::new(|| static_selector("span.publishedDate"));
+static SEL_VIEWS: LazyLock<Selector> = LazyLock::new(|| static_selector("span.tm_infoValue"));
+static SEL_RATING: LazyLock<Selector> = LazyLock::new(|| static_selector("span.tm_rating_percent"));
 static SEL_TAGS: LazyLock<Selector> = LazyLock::new(|| {
-    Selector::parse("div.js_scrollableContent a.bubble-porntag, a[data-espnode='category_tag'], a[data-espnode='porntag_tag']").unwrap()
+    static_selector(
+        "div.js_scrollableContent a.bubble-porntag, a[data-espnode='category_tag'], a[data-espnode='porntag_tag']",
+    )
 });
 static SEL_MODELS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("#metaDataPornstarInfo a.tm_pornstar_link span").unwrap());
+    LazyLock::new(|| static_selector("#metaDataPornstarInfo a.tm_pornstar_link span"));
 
 static SEL_SEARCH_CARDS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("article.video-box.pc").unwrap());
-static SEL_SEARCH_LINK: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("a.tm_video_link").unwrap());
+    LazyLock::new(|| static_selector("article.video-box.pc"));
+static SEL_SEARCH_LINK: LazyLock<Selector> = LazyLock::new(|| static_selector("a.tm_video_link"));
 static SEL_SEARCH_TITLE: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("a.tm_video_title span").unwrap());
-static SEL_SEARCH_IMG: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("img.thumb-image").unwrap());
+    LazyLock::new(|| static_selector("a.tm_video_title span"));
+static SEL_SEARCH_IMG: LazyLock<Selector> = LazyLock::new(|| static_selector("img.thumb-image"));
 static SEL_SEARCH_DURATION: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse("div.tm_video_duration span").unwrap());
+    LazyLock::new(|| static_selector("div.tm_video_duration span"));
 static SEL_SEARCH_VIEWS: LazyLock<Selector> =
-    LazyLock::new(|| Selector::parse(".view-rating-container .info-views").unwrap());
+    LazyLock::new(|| static_selector(".view-rating-container .info-views"));
 
 pub fn parse_youporn_get(body: &[u8]) -> Result<VideoResponse, AppError> {
     let html_str = String::from_utf8_lossy(body);

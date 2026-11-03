@@ -29,7 +29,7 @@ pub struct CacheService {
 }
 
 impl CacheService {
-    pub fn new(max_capacity: u64, ttl_hours: u64, redis_url: Option<&str>) -> Result<Self, String> {
+    pub fn new(max_bytes: u64, ttl_hours: u64, redis_url: Option<&str>) -> Result<Self, String> {
         let ttl = Duration::from_secs(ttl_hours * 3600);
 
         let backend = if let Some(url) = redis_url {
@@ -44,14 +44,16 @@ impl CacheService {
                     warn!(
                         "Failed to construct Redis pool configuration: {err}. Falling back to in-memory Moka cache."
                     );
-                    Self::create_in_memory_backend(max_capacity, ttl)
+                    Self::create_in_memory_backend(max_bytes, ttl)
                 }
             }
         } else {
             info!(
-                "No REDIS_URL configured. Initializing bounded in-memory Moka cache backend (max capacity: {max_capacity} entries)."
+                "No REDIS_URL configured. Initializing byte-bounded in-memory Moka cache backend (byte budget: {} bytes, max ~{:.1} MB).",
+                max_bytes,
+                (max_bytes as f64) / (1024.0 * 1024.0)
             );
-            Self::create_in_memory_backend(max_capacity, ttl)
+            Self::create_in_memory_backend(max_bytes, ttl)
         };
 
         Ok(Self {
@@ -61,13 +63,24 @@ impl CacheService {
         })
     }
 
-    fn create_in_memory_backend(max_capacity: u64, ttl: Duration) -> CacheBackend {
-        // Bounded to 1000 entries max to prevent TinyLFU sketch pre-allocation bloat (matching jandapress)
+    fn create_in_memory_backend(max_bytes: u64, ttl: Duration) -> CacheBackend {
+        // Byte-bounded cache using weigher (Fixes PRD N2 & Task P1-4)
+        // Limits total raw HTML and string payload footprint in RAM
         let cache = MokaCache::builder()
-            .max_capacity(max_capacity)
+            .weigher(|k: &String, v: &Vec<u8>| {
+                // Total bytes: payload + URL key string + struct overhead
+                (v.len() + k.len() + 64) as u32
+            })
+            .max_capacity(max_bytes)
             .time_to_live(ttl)
             .build();
         CacheBackend::InMemory(cache)
+    }
+
+    pub async fn run_pending_tasks(&self) {
+        if let CacheBackend::InMemory(cache) = &self.backend {
+            cache.run_pending_tasks().await;
+        }
     }
 
     pub async fn test_connection(&self) -> Result<(), String> {
@@ -159,5 +172,40 @@ impl CacheService {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_byte_weighted_cache_eviction() {
+        // Budget: 1000 bytes
+        let cache = CacheService::new(1000, 1, None).unwrap();
+
+        // Inserting 600 bytes payload
+        cache.set("https://example.com/1", vec![1u8; 600]).await;
+        assert!(cache.get("https://example.com/1").await.is_some());
+
+        // Inserting another 600 bytes payload (exceeds 1000 bytes)
+        cache.set("https://example.com/2", vec![2u8; 600]).await;
+        cache.run_pending_tasks().await;
+
+        // Since 600 + 600 + overhead > 1000, one entry must be evicted
+        let has_1 = cache.get("https://example.com/1").await.is_some();
+        let has_2 = cache.get("https://example.com/2").await.is_some();
+        assert!(
+            !(has_1 && has_2),
+            "Byte weighted cache should evict when budget exceeded"
+        );
+    }
+
+    #[tokio::test]
+    async fn test_random_urls_never_cached() {
+        let cache = CacheService::new(10_000, 1, None).unwrap();
+        cache.set("https://example.com/random", vec![1, 2, 3]).await;
+        assert!(cache.get("https://example.com/random").await.is_none());
     }
 }

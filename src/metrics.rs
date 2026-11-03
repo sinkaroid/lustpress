@@ -226,6 +226,18 @@ pub async fn metrics_handler() -> impl IntoResponse {
     )
 }
 
+/// RAII guard ensuring in-flight metric counter is always decremented,
+/// even if request future is cancelled or aborted by client (PRD J2 / P1-7)
+pub struct InFlightGuard<'a>(&'a str);
+
+impl<'a> Drop for InFlightGuard<'a> {
+    fn drop(&mut self) {
+        if let Some(counter) = HTTP_IN_FLIGHT.get(self.0) {
+            counter.fetch_sub(1, Ordering::Relaxed);
+        }
+    }
+}
+
 pub async fn telemetry_middleware(req: Request<Body>, next: Next) -> Response {
     let method = req.method().clone();
     let method_str = method.to_string();
@@ -274,20 +286,16 @@ pub async fn telemetry_middleware(req: Request<Body>, next: Next) -> Response {
         user_agent
     );
 
-    // Track active requests count by method
+    // Track active requests count by method via RAII guard
     HTTP_IN_FLIGHT
         .entry(method_str.clone())
         .or_insert_with(|| AtomicU64::new(0))
         .fetch_add(1, Ordering::Relaxed);
+    let _guard = InFlightGuard(&method_str);
 
     let start = Instant::now();
     let res = next.run(req).await;
     let elapsed = start.elapsed();
-
-    // Decrement active requests count
-    if let Some(counter) = HTTP_IN_FLIGHT.get(&method_str) {
-        counter.fetch_sub(1, Ordering::Relaxed);
-    }
 
     let status_code = res.status().as_u16().to_string();
 
@@ -304,6 +312,9 @@ pub async fn telemetry_middleware(req: Request<Body>, next: Next) -> Response {
     metric
         .duration_sum_micros
         .fetch_add(elapsed.as_micros() as u64, Ordering::Relaxed);
+
+    // Actively trim freed glibc heap pages after request AST DOM is dropped
+    crate::util::trim_memory();
 
     res
 }

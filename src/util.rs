@@ -27,9 +27,49 @@ pub fn trim_memory() {
     }
 }
 
+/// Helper to compile static CSS selectors at startup without `.unwrap()` at call sites
+pub fn static_selector(selector_str: &'static str) -> scraper::Selector {
+    match scraper::Selector::parse(selector_str) {
+        Ok(s) => s,
+        Err(err) => panic!("Invalid static CSS selector '{selector_str}': {err:?}"),
+    }
+}
+
+/// Validates that an ID query is safe against URL query injection / path traversal (PRD J6)
+pub fn is_valid_id(id: &str) -> bool {
+    let clean = id.trim();
+    if clean.is_empty() || clean.len() > 256 {
+        return false;
+    }
+    if clean.contains("..")
+        || clean.contains('&')
+        || clean.contains('?')
+        || clean.contains('#')
+        || clean.contains('\\')
+        || clean.contains(' ')
+    {
+        return false;
+    }
+    clean
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-' || c == '/')
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_is_valid_id() {
+        assert!(is_valid_id("ph12345"));
+        assert!(is_valid_id("video-12345"));
+        assert!(is_valid_id("12345/sample_title-slug"));
+        assert!(!is_valid_id(""));
+        assert!(!is_valid_id("ph123&evil=1"));
+        assert!(!is_valid_id("ph123#fragment"));
+        assert!(!is_valid_id("../etc/passwd"));
+        assert!(!is_valid_id("id with spaces"));
+    }
 
     #[test]
     fn test_encode_query() {

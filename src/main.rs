@@ -7,6 +7,9 @@ use std::error::Error;
 use tower_http::cors::CorsLayer;
 use tracing::info;
 
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     // 1. Load .env if present
@@ -59,6 +62,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }
         });
     }
+
+    // 5c. Spawn periodic in-memory cache maintenance task (pruning expired TTL entries)
+    let cache_maint = state.cache.clone();
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));
+        loop {
+            interval.tick().await;
+            cache_maint.run_pending_tasks().await;
+            lustpress::util::trim_memory();
+        }
+    });
 
     // 5. Build router with CORS
     let app = create_router(state).layer(CorsLayer::permissive());

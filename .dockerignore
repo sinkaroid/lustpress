@@ -1,12 +1,16 @@
 target
 tools/**/target
 legacy
+AGENTS.md
 .agent
 .agents
 .git
 .github
+.vscode
 .env
-.env.schema
+.env.*
 node_modules
 *.md
 LICENSE
+resources/project
+resources/project/images
