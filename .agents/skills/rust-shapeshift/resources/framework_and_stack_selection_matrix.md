@@ -6,7 +6,7 @@ A frequent failure mode in Rust backend engineering is choosing a web framework 
 
 Reaching for Tokio and Axum for an ephemeral monitoring sidecar wastes 20MB–40MB of memory on unused thread pools. Conversely, hand-rolling HTTP/1.1 parsers with `std::net` for a complex SaaS application wastes months reinventing routing, OpenAPI schemas, and multipart streams.
 
-This playbook provides an objective, production-tested **Selection Matrix** comparing **Zero-Dependency Manual (`std::net`)**, **Axum**, **Actix Web**, **Salvo**, **Poem**, **Rocket**, and **Loco**.
+This reference guide provides an objective, production-tested **Selection Matrix** comparing **Zero-Dependency Manual (`std::net`)**, **Axum**, **Actix Web**, **Salvo**, **Poem**, **Rocket**, and **Loco**.
 
 ---
 

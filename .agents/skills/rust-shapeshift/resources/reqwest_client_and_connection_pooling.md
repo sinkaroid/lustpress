@@ -42,7 +42,7 @@ pub fn create_shared_http_client(user_agent: &str) -> reqwest::Client {
 
 A common mistake is using the same 15-second timeout for everything. If an ancillary request (like GeoIP lookup or third-party status probe) hangs, it pins the Tokio worker thread context for 15 seconds.
 
-### The Jandapress Pattern:
+### The Fast-Fail Ancillary Pattern:
 Override timeouts on ancillary requests so they fail fast without impacting core traffic:
 
 ```rust

@@ -37,7 +37,7 @@ Connecting to Redis in asynchronous Rust (via `redis` and `deadpool-redis`) oper
 
 ---
 
-## 2. The Production-Tested Hybrid Cache Pattern (`jandapress`)
+## 2. The Production-Tested Hybrid Cache Pattern
 
 ```rust
 use deadpool_redis::{Config as RedisConfig, Pool, Runtime};

@@ -2,7 +2,7 @@
 
 In high-throughput services, an unhandled panic on a Tokio worker thread drops the task, risks corrupting thread-local state, orphans synchronization locks, and degrades long-term process throughput. A robust production service must be mathematically panic-free at compile time.
 
-This playbook documents the **Zero-Panic Policy**, router recursion management, and correct middleware layer ordering used in high-efficiency production services.
+This reference guide documents the **Zero-Panic Policy**, router recursion management, and correct middleware layer ordering used in high-efficiency production services.
 
 ---
 

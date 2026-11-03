@@ -2,7 +2,7 @@
 
 Offloading anti-bot challenges, age verification gates, or dynamic cookies to headless browser instances (such as Chromium) consumes **300MB to 1GB of RAM per instance**, utterly defeating memory efficiency and low-latency throughput goals. In native high-performance Rust, these challenges are solved directly in code via single-flight synchronization and reverse-engineered cryptographic or mathematical algorithms.
 
-This playbook demonstrates how to eliminate headless browsers entirely using:
+This reference guide demonstrates how to eliminate headless browsers entirely using:
 1. **Algorithmic Challenge Solvers**: Reverse-engineering the challenge directly in Rust.
 2. **Single-Flight Cookie Bootstrapping**: Using `Arc<RwLock<...>>` to ensure only one worker thread authenticates, while all concurrent requests wait and reuse the acquired cookie.
 3. **Chunked Early-Break Response Streaming**: Reading only the header script without buffering full pages.

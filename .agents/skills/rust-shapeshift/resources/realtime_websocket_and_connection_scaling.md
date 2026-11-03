@@ -4,7 +4,7 @@ In real-time communication systems (chat gateways, live sports feeds, financial 
 
 A naive WebSocket server consumes **100KB to 200KB of RAM per idle connection**—meaning 50,000 idle connections exhaust 5GB to 10GB of memory before processing a single payload.
 
-This playbook documents the architecture required to achieve **< 4KB RSS per concurrent connection** and sub-millisecond zero-copy broadcast fan-out.
+This reference guide documents the architecture required to achieve **< 4KB RSS per concurrent connection** and sub-millisecond zero-copy broadcast fan-out.
 
 ---
 

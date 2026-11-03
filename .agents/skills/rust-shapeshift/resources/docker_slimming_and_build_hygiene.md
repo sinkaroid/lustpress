@@ -2,7 +2,7 @@
 
 Achieving production efficiency requires minimizing **both runtime memory consumption (RSS) and physical Docker image size**. A bloated Docker image wastes registry bandwidth, slows CI/CD deployments, expands vulnerability attack surfaces, and invalidates build caches needlessly.
 
-This playbook documents the exact multi-stage container recipe and `.dockerignore` discipline used in **Jandapress** and **Lustpress** to achieve **sub-80MB Debian runtime images** and instant build context transfers.
+This reference guide documents the exact multi-stage container recipe and `.dockerignore` discipline used in high-throughput production services to achieve **sub-80MB Debian runtime images** and instant build context transfers.
 
 ---
 

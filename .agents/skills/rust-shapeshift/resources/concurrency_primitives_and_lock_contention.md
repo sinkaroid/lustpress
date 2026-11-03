@@ -2,7 +2,7 @@
 
 In multi-threaded asynchronous systems, synchronization primitives are a frequent source of hidden latency, CPU core throttling, and allocator churn. Developers commonly default to `tokio::sync::Mutex` indiscriminately or misuse standard library locks, causing thread pool deadlocks, excessive OS futex syscalls, and CPU cache line thrashing.
 
-This playbook establishes the rules for selecting and tuning concurrency primitives for sub-microsecond synchronization.
+This reference guide establishes the rules for selecting and tuning concurrency primitives for sub-microsecond synchronization.
 
 ---
 

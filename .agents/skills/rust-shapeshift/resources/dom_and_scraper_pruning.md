@@ -1,8 +1,8 @@
-# Scraper & DOM Optimization Playbook: Cutting 80% Memory Bloat
+# Scraper & DOM Optimization Reference: Cutting 80% Memory Bloat
 
 Parsing full, unconstrained HTML documents (containing thousands of script tags, ads, comments, and footers) into an in-memory DOM tree allocates millions of transient AST nodes, severely stressing the memory allocator and bloating process RSS.
 
-This playbook demonstrates the exact patterns used to achieve sub-50MB RSS memory baselines by pruning raw text strings before AST instantiation.
+This reference guide demonstrates the exact patterns used to achieve sub-50MB RSS memory baselines by pruning raw text strings before AST instantiation.
 
 ---
 
@@ -86,7 +86,7 @@ static SEL_VIEWS: LazyLock<Selector> =
 
 ## 3. Pattern C: Zero-Allocation Byte Slice Parsing for JSON APIs
 
-When scraping providers that offer undocumented or internal JSON endpoints (such as Eporner or Txxx in `lustpress`), **never** allocate an intermediate `String` from the network response.
+When scraping upstream providers that offer undocumented or internal JSON endpoints, **never** allocate an intermediate `String` from the network response.
 
 Deserialize directly from `&[u8]` using `serde_json::from_slice`:
 

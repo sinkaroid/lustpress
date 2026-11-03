@@ -2,7 +2,7 @@
 
 In web APIs, microservices, and scraper pipelines, JSON serialization and deserialization is the single largest consumer of CPU cycles and allocator bandwidth. The default pattern of deserializing into owned `String` fields forces thousands of tiny heap allocations per request, completely defeating the zero-cost promise of Rust.
 
-This playbook documents how to eliminate allocation churn during serialization and achieve zero-copy JSON parsing.
+This reference guide documents how to eliminate allocation churn during serialization and achieve zero-copy JSON parsing.
 
 ---
 

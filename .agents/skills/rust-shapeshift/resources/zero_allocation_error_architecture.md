@@ -4,7 +4,7 @@ In high-throughput services, error handling is frequently overlooked as a source
 1. **The `Result<T, E>` Stack Bloat**: The memory size of `Result<T, E>` is determined by `max(sizeof(T), sizeof(E)) + alignment`. A bloated error enum forces every single function call returning `Result` to allocate massive stack frames, even when the `Ok` branch is taken 99.9% of the time.
 2. **Hot-Path Error Heap Churn**: Creating error instances using `format!` or `String::from` triggers heap allocations on every validation failure, rate limit breach, or missing parameter. Under high traffic or bot fuzzing, error generation alone degrades allocator performance.
 
-This playbook documents how to construct lean, zero-allocation error hierarchies.
+This reference guide documents how to construct lean, zero-allocation error hierarchies.
 
 ---
 

@@ -4,7 +4,7 @@ In GraphQL APIs, memory efficiency cannot be guaranteed by standard HTTP body li
 
 Without strict schema-level containment, a single recursive GraphQL query can allocate hundreds of thousands of intermediate async futures, blowing process RSS past gigabytes in milliseconds.
 
-This playbook documents how to build a high-throughput, memory-contained GraphQL server using **`async-graphql`** and **`async-graphql-axum`**.
+This reference guide documents how to build a high-throughput, memory-contained GraphQL server using **`async-graphql`** and **`async-graphql-axum`**.
 
 ---
 

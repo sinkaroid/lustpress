@@ -4,7 +4,7 @@ In high-concurrency systems running on multi-core processors, extreme efficiency
 1. **Struct Padding Bloat**: Memory wasted on unused alignment bytes across millions of cache/struct instances.
 2. **False Sharing (Cache-Line Bouncing)**: Independent CPU cores invalidating each other's L1 cache lines when mutating adjacent variables, collapsing multi-core scalability by up to 80%.
 
-This playbook details the hardware-level layout optimizations needed to eliminate these bottlenecks.
+This reference guide details the hardware-level layout optimizations needed to eliminate these bottlenecks.
 
 ---
 

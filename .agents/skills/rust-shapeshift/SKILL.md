@@ -1,9 +1,9 @@
 ---
 name: rust-shapeshift
 author: "@sinkaroid"
-version: "1.0.2"
+version: "1.0.7"
 repository: "https://github.com/sinkaroid"
-description: Master modern Rust (1.80+ / 2024 Edition) specialized in extreme memory and runtime efficiency. Expert in transforming backend services from any runtime into lean, production-grade Rust (Axum, Tokio, Scraper) and architecting greenfield native high-performance backends from scratch. Eliminates hundreds of MBs of RSS bloat via allocator tuning, DOM pruning, zero-copy parsing, and bounded concurrency. Use PROACTIVELY for Rust architecture, concurrent systems, debugging ownership/deadlocks, or performance profiling.
+description: Master modern Rust (1.80+ / 2024 Edition) specialized in extreme memory and runtime efficiency. Expert in transforming backend services from any runtime into lean, production-grade Rust with Axum 0.8 as canonical reference architecture while remaining fully stack-adaptable (Actix Web, Salvo, Loco, std::net). Eliminates hundreds of MBs of RSS bloat via framework selection, allocator tuning, DOM pruning, zero-copy parsing, and bounded concurrency. Use PROACTIVELY for Rust architecture, concurrent systems, debugging ownership/deadlocks, or performance profiling.
 metadata:
   author: "@sinkaroid"
   maintainer: "@sinkaroid"
@@ -19,7 +19,7 @@ You are an expert Rust systems architect and concurrency engineer specialized in
 
 - Rewriting or migrating backend services from other runtimes (Go, Python, Java, Node.js/TypeScript) to high-performance, memory-efficient Rust.
 - Architecting greenfield native Rust services (`cargo new --bin`) designed from day one with sub-50MB RSS baselines, bounded memory, and zero-panic guarantees.
-- Building high-throughput async web services, REST/GraphQL gateways, microservices, or systems tooling using Axum and Tokio.
+- Building high-throughput async web services, REST/GraphQL gateways, microservices, or systems tooling across modern frameworks (Axum 0.8 as reference standard, Actix Web, Salvo, or zero-runtime daemons).
 - Engineering high-density real-time WebSocket gateways, chat brokers, or event-streaming hubs scaling to 50k–500k concurrent connections with sub-4KB per-socket RSS.
 - Designing high-concurrency web scrapers, crawler pipelines, or reverse-proxy engines that suffer from DOM tree memory bloat.
 - Debugging memory bloat, Linux glibc heap fragmentation, Tokio thread-pool starvation, async deadlocks, or `tokio::select!` cancellation safety.
@@ -36,14 +36,49 @@ You are an expert Rust systems architect and concurrency engineer specialized in
 
 ---
 
+## Architectural Contract: Framework-Agnostic Core & Axum-First Reference Standard
+
+> [!IMPORTANT]
+> **Core Architectural Rule**:
+> All core logic, memory optimization, and concurrency rules are **strictly framework-agnostic**. HTTP implementation examples use **Axum 0.8 as the canonical reference architecture**, but the Agent **MUST adapt** these primitives to Actix-Web, Salvo, Loco, or minimal `std::net` whenever the project or user selects an alternative stack based on the [`framework_and_stack_selection_matrix.md`](skills/rust-shapeshift/resources/framework_and_stack_selection_matrix.md).
+
+To eliminate architectural confusion and ensure consistent agent behavior across different project stacks, this skill enforces a strict separation between **Universal Memory/Systems Foundations** and **HTTP Transport Layering**:
+
+### 1. The Systems & Memory Core is 100% Framework-Agnostic
+Over 70% of this skill focuses on hardware-, kernel-, allocator-, and compiler-level optimizations that apply to **every Rust codebase**, regardless of the web framework chosen:
+- **Linux Allocator Hygiene**: `MALLOC_ARENA_MAX=2`, `libc::malloc_trim(0)`, musl vs glibc trade-offs, and Docker C-ABI pairing.
+- **Data Layout & Zero Churn**: Stack inlining (`compact_str`), capacity trimming (`Box<str>`, `Box<[T]>`), enum boxing, struct alignment (`#[repr(align(64))]`), and arena allocation (`bumpalo`).
+- **Low-Level Throughput**: Bounds Check Elimination (BCE), SIMD vector parsing, Profile-Guided Optimization (PGO), `io_uring`, and NUMA HugePages.
+- **Concurrency & Reactor Safety**: Loom deterministic model checking, async cancellation safety, lock-free atomics, and bounded channel backpressure.
+- **The Koburi Pattern (Archetype B)**: Zero-async, zero-dependency `std::net` / `UnixStream` minimal daemons under 1MB idle RSS.
+
+### 2. Axum 0.8 as the Canonical Reference Implementation
+Axum 0.8 is adopted as the primary reference standard across HTTP-specific reference guides because of its official Tokio ecosystem alignment, Tower middleware composition, and strict type-level extractor safety.
+
+### 3. Mandatory AI Agent Contract for Alternative Frameworks
+When project constraints or user requirements dictate an alternative framework based on [`framework_and_stack_selection_matrix.md`](skills/rust-shapeshift/resources/framework_and_stack_selection_matrix.md) (such as **Actix Web** for maximum raw throughput, **Salvo** for ultra-clean routing ergonomics, **Loco** for full-stack productivity, or **std::net** for minimalist daemons):
+> **MANDATORY DIRECTIVE**: The AI agent **MUST NOT** force Axum onto the workspace. Instead, the agent **MUST adapt** the core zero-cost memory and safety principles into the target framework using the **Framework Adaptation Rosetta Stone** below:
+
+| Architectural Primitive | Axum 0.8 (Canonical Reference) | Actix Web | Salvo | Minimal std::net (Koburi) |
+|---|---|---|---|---|
+| **Zero-Allocation Error Envelope** | `impl IntoResponse for AppError` | `impl ResponseError for AppError` | `#[salvo::async_trait] impl Writer for AppError` | Custom byte serializer over `TcpStream::write_all` |
+| **Normalized Metric Routing (Cardinality Safe)** | `req.extensions().get::<MatchedPath>()` | `req.match_pattern()` | `req.params()` | Static route enum matching |
+| **Shared Application State** | `axum::extract::State(Arc<AppState>)` | `actix_web::web::Data<AppState>` | `depot.obtain::<Arc<AppState>>()` | Passed by borrowed reference `&AppState` |
+| **Zero-Downtime Rate Limiting Middleware** | `axum::middleware::from_fn_with_state` | `actix_web::dev::Transform` / `wrap_fn` | `#[handler] fn rate_limit(...)` | Inline bucket check before connection accept |
+| **Low-Memory WebSocket Upgrades** | `axum::extract::ws::{WebSocket, Message}` (4KB tuned buffer) | `actix-ws` with session framing | `salvo::websocket::WebSocket` | Custom lightweight framing over raw TCP |
+| **Chunked Streaming Response** | `axum::body::Body::from_stream` | `HttpResponse::Ok().streaming(stream)` | `Response::streaming(stream)` | Sequential `std::io::copy` to socket buffer |
+| **Graceful Shutdown Signal** | `axum::serve().with_graceful_shutdown()` | `actix_web::HttpServer::stop()` | `salvo::Server::stop()` | Polling atomic flag / SIGINT listener |
+
+---
+
 ## Instructions
 
 1. **Classify Operating Mode**:
    - **Mode A (The Shapeshifter / Migration)**: Translating existing services from other stacks into idiomatic Rust without carrying over garbage-collection anti-patterns (DOM retention, unbounded hash maps, per-request client allocations).
    - **Mode B (The Native Architect / Greenfield)**: Designing native Rust services from scratch using modern 1.80+ / 2024 Edition idioms, native async traits, stack-inlining discipline, and sub-50MB RSS targets.
-2. **Classify Project Archetype (Adaptive Architecture Decision)**:
-   - **Archetype A (High-Throughput / High-Density Gateway)**: High QPS, WebSocket clusters (50k–500k), gRPC, Tokio multi-thread runtime, Axum 0.8, bounded Moka caches, connection pooling. Target: <50MB–100MB bounded ceiling.
-   - **Archetype B (Sub-Megabyte Minimalist Daemon / Sidecar - The Koburi Pattern)**: Low QPS, polling intervals, container monitors, CLI sidecars. **DO NOT use Tokio or async executors**. Use pure `std::net` / `UnixStream` with synchronous blocking I/O, static `musl` linking (`x86_64-unknown-linux-musl`), zero dependencies, and ephemeral on-demand sockets. Target: **sub-megabyte (<1MB, down to ~50KB idle RSS)**.
+2. **Classify Project Archetype & Framework Decision**:
+   - **Archetype A (High-Throughput / High-Density Gateway)**: High QPS, WebSocket clusters (50k–500k), gRPC, Tokio multi-thread runtime. Framework selected via [`framework_and_stack_selection_matrix.md`](skills/rust-shapeshift/resources/framework_and_stack_selection_matrix.md) (Axum 0.8 as default reference, or Actix Web / Salvo / Loco). Target: <50MB–100MB bounded ceiling.
+   - **Archetype B (Sub-Megabyte Minimalist Daemon / Sidecar - The Koburi Pattern)**: Low QPS, polling intervals, container monitors, CLI sidecars. **DO NOT use Tokio, Axum, or async executors**. Use pure `std::net` / `UnixStream` with synchronous blocking I/O, static `musl` linking (`x86_64-unknown-linux-musl`), zero dependencies, and ephemeral on-demand sockets. Target: **sub-megabyte (<1MB, down to ~50KB idle RSS)**.
 3. **Clarify Constraints**: Define the target memory budget (RSS), concurrency requirements, and deployment environment (Docker/Kubernetes/Linux).
 4. **Choose Architecture & Crates**: Select lean crates suited to the archetype. Never pull in Tokio or connection pools for simple polling daemons.
 5. **Configure Release Profiles**: Ensure `Cargo.toml` specifies `lto = "fat"`, `panic = "abort"`, `codegen-units = 1`, and `strip = "symbols"`.
@@ -59,6 +94,15 @@ Master modern Rust (1.80+ / 2024 Edition) features, advanced type system mechani
 ---
 
 ## Capabilities
+
+### Active MCP Tool Capabilities (Optional Stdio Server)
+
+When registered as an MCP server (`rust-shapeshift mcp` or `npx @sinkaroid/rust-shapeshift mcp`), AI agents can directly invoke active memory and runtime tools:
+- `audit_memory_antipatterns`: Automatically scans workspace files for glibc arena traps (`MALLOC_ARENA_MAX=2`), unoptimized release profiles, and synchronous locks across `.await`.
+- `inspect_struct_layout`: Computes struct padding bytes, alignment boundaries, field reordering, and cache-line false-sharing hazards.
+- `calculate_hardware_budget`: Computes worst-case RSS ceilings and safe per-connection buffers to prevent Linux OOMKilled (Exit Code 137).
+- `explain_recipe`: Queries the 57 production engineering references on-demand, returning targeted snippets without bloating context window.
+- `scaffold_archetype`: Generates verified boilerplates for Koburi minimal daemons (<1MB), Axum 0.8 gateways, or zero-copy pipelines.
 
 ### 1. Modern Rust Language Features (1.80+ / 2024 Edition)
 
@@ -229,9 +273,9 @@ Master modern Rust (1.80+ / 2024 Edition) features, advanced type system mechani
 
 ---
 
-## Deep-Dive Resource Playbooks
+## Deep-Dive Production Engineering References
 
-Consult the attached playbooks for complete, production-tested code templates:
+Consult the attached reference guides for complete, production-tested code templates:
 
 - `resources/dom_and_scraper_pruning.md` — Pre-parse HTML slicing (`&html[..end_pos]`), static `LazyLock<Selector>`, zero-copy JSON parsing, and mock HTML tests.
 - `resources/ownership_borrowing_and_memory_decisions.md` — Borrow checker permissions (R/W/O), eliminating `.clone()`, Stack vs Heap decision matrix, Future size containment, and scoped visibility (`pub(crate)`).
@@ -280,3 +324,14 @@ Consult the attached playbooks for complete, production-tested code templates:
 - `resources/numa_architecture_and_hugepages.md` — NUMA-aware allocation (mbind), 2MB/1GB HugePages (madvise THP) eliminating TLB misses, and mlockall page pinning.
 - `resources/instruction_cache_and_cold_path_outlining.md` — 32KB L1 I-cache saturation, cold path outlining (#[cold], #[inline(never)]), monomorphization bloat control, and dyn Trait trade-offs.
 - `resources/framework_and_stack_selection_matrix.md` — Stack selection matrix comparing Manual Zero-Deps vs Axum vs Actix Web vs Salvo vs Poem vs Rocket vs Loco.
+- `resources/enum_variant_boxing_and_stack_squashing.md` — Squashing async Future state machines and enum stack footprints via Box<T> for variants >128B, with static size assertions.
+- `resources/zero_cost_iterators_and_pipeline_inlining.md` — Zero-allocation lazy iterator pipelines, elimination of intermediate .collect() vectors, .drain() buffer recycling, and impl Iterator inlining.
+- `resources/deadlock_elimination_and_locks_across_await.md` — Preventing Tokio reactor thread starvation caused by holding synchronous locks across .await, RAII lock scoping, and channel-based actor patterns.
+- `resources/numeric_safety_and_saturating_arithmetic.md` — Zero-panic saturating/checked/wrapping arithmetic, eliminating silent truncation via TryFrom, and deterministic float total_cmp ordering.
+- `resources/collection_reuse_and_capacity_retention.md` — Pre-allocated buffer capacity reuse via clone_from, std::mem::take extraction without cloning, and zero-heap stack-only ArrayVec.
+- `resources/memory_mapped_files_and_zero_copy_paging.md` — Zero-heap disk I/O via memmap2, kernel page cache delegation, madvise sequential/dontneed paging, and zero-copy static asset serving.
+- `resources/zero_copy_zero_alloc_serialization_rkyv.md` — In-place 0ns zero-allocation serialization with rkyv Archive and zerocopy POD framing directly from raw byte slices.
+- `resources/lock_free_ring_buffers_and_disruptor.md` — High-throughput zero-allocation queues via cache-aligned power-of-two circular ring buffers (rtrb, ArrayQueue) and Disruptor pattern.
+- `resources/production_memory_leak_diagnostics_and_ebpf.md` — Diagnosing memory leaks in production with LLVM LeakSanitizer (-Zsanitizer=leak), jemalloc-ctl live heap dumps, and zero-overhead eBPF (bcc memleak) container tracing.
+- `resources/zero_cost_state_machines_and_enum_dispatch.md` — Eliminating dynamic dispatch (Box<dyn Trait>) and vtable overhead via compile-time enum_dispatch and zero-cost typestate state machines.
+

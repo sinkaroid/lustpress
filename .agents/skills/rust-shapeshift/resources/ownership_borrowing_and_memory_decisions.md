@@ -2,7 +2,7 @@
 
 In Rust systems architecture, memory safety and extreme runtime efficiency are direct consequences of the **Ownership and Borrow Checker Permission Model**. Novice developers and unguided AI agents frequently resort to `.clone()` as a crutch to bypass compiler borrow errors, introducing unnecessary heap churn, latency spikes, and CPU cache misses.
 
-This playbook provides the authoritative **Decision Matrix** for placing data on the Stack vs Heap, mastering the Borrow Checker's permission mechanics, and applying strict visibility encapsulation.
+This reference guide provides the authoritative **Decision Matrix** for placing data on the Stack vs Heap, mastering the Borrow Checker's permission mechanics, and applying strict visibility encapsulation.
 
 ---
 

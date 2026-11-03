@@ -2,7 +2,7 @@
 
 Many Rust applications pull in bloated telemetry crates (`prometheus`, `opentelemetry`) that add megabytes to binary size and create subtle memory leaks through unconstrained label dimensions.
 
-This playbook provides a **lightweight, zero-dependency Prometheus metrics exporter** that tracks OS process memory, Tokio scheduler health, event loop lag, and HTTP requests with strict cardinality containment.
+This reference guide provides a **lightweight, zero-dependency Prometheus metrics exporter** that tracks OS process memory, Tokio scheduler health, event loop lag, and HTTP requests with strict cardinality containment.
 
 ---
 
@@ -96,7 +96,7 @@ pub async fn telemetry_middleware(req: Request<Body>, next: Next) -> Response {
         return next.run(req).await;
     }
 
-    // STRICT route normalization: Only record matched templates (e.g. /pornhub/get),
+    // STRICT route normalization: Only record matched templates (e.g. /api/v1/items/:id),
     // NEVER raw path or query params (?id=..., ?key=...) to prevent cardinality explosion.
     let matched_path = req
         .extensions()

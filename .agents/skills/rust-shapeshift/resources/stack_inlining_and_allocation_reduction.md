@@ -2,7 +2,7 @@
 
 In high-throughput services and scrapers, indiscriminate use of `String` and `Vec<T>` inside Data Transfer Objects (DTOs), ASTs, and cache models causes thousands of tiny heap allocations and deallocations per second. This triggers CPU L1/L2 cache misses, increases glibc arena fragmentation, and unnecessarily inflates process RSS.
 
-This playbook establishes the **Zero-Allocation Type Discipline** required for sub-50MB RSS baseline operations.
+This reference guide establishes the **Zero-Allocation Type Discipline** required for sub-50MB RSS baseline operations.
 
 ---
 

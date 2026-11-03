@@ -6,7 +6,7 @@ In dynamic languages (JavaScript / Python), developers habitually call regex rep
 
 ## 1. Zero-Regex Whitespace Squeezing (Single-Pass Iterator)
 
-In `jandapress/src/scraper/pururin.rs`, collapsing newlines and multiple spaces into a single space is executed on every parsed tag.
+In high-volume HTML scraping, collapsing newlines and multiple spaces into a single space is executed on every parsed tag.
 
 Instead of running a regex engine, this single-pass character iterator performs zero regex compilation and minimal allocations:
 
@@ -35,7 +35,7 @@ pub fn squeeze_whitespace(value: &str) -> String {
 
 ## 2. Integer Arithmetic Over Heavy Date/Time Crates
 
-In `lustpress/src/util.rs`, converting video duration in seconds into `"{m}min, {s}sec"` format is called on hundreds of items per search request.
+In media metadata processing, converting duration in seconds into `"{m}min, {s}sec"` format is called on hundreds of items per search request.
 
 Instead of creating DateTime objects or calling heavy formatting libraries, use native CPU integer division and modulo:
 
@@ -69,7 +69,7 @@ pub fn encode_query(val: &str) -> String {
 
 ## 4. Static Regex Compilation with `LazyLock<Regex>`
 
-When regular expressions are strictly required (such as mathematical challenge extraction in `lustpress/src/fetch.rs`), **NEVER** construct `Regex::new(...)` inside function bodies.
+When regular expressions are strictly required (such as mathematical challenge token extraction), **NEVER** construct `Regex::new(...)` inside function bodies.
 
 Always compile regex patterns once into static memory:
 
