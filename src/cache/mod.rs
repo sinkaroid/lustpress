@@ -1,8 +1,43 @@
 use deadpool_redis::redis::AsyncCommands;
 use deadpool_redis::{Config as RedisConfig, Pool as RedisPool, Runtime};
+use flate2::Compression;
+use flate2::read::GzDecoder;
+use flate2::write::GzEncoder;
 use moka::future::Cache as MokaCache;
+use std::io::{Read, Write};
 use std::time::Duration;
 use tracing::{debug, info, warn};
+
+/// Compresses bytes using fast Gzip if payload exceeds 512 bytes.
+/// Payloads <= 512 bytes remain uncompressed to avoid compression overhead.
+pub fn compress_payload(data: Vec<u8>) -> Vec<u8> {
+    if data.len() <= 512 {
+        return data;
+    }
+
+    let mut encoder = GzEncoder::new(Vec::new(), Compression::fast());
+    if encoder.write_all(&data).is_ok() {
+        match encoder.finish() {
+            Ok(compressed) => compressed,
+            Err(_) => data,
+        }
+    } else {
+        data
+    }
+}
+
+/// Decompresses bytes if Gzip magic bytes (0x1f, 0x8b) are detected.
+/// Transparently returns raw bytes if uncompressed (ensuring backward compatibility).
+pub fn decompress_payload(data: Vec<u8>) -> Vec<u8> {
+    if data.len() >= 2 && data[0] == 0x1f && data[1] == 0x8b {
+        let mut decoder = GzDecoder::new(&data[..]);
+        let mut decompressed = Vec::new();
+        if decoder.read_to_end(&mut decompressed).is_ok() {
+            return decompressed;
+        }
+    }
+    data
+}
 
 fn sanitize_redis_url(url: &str) -> String {
     if let Ok(mut parsed) = url::Url::parse(url) {
@@ -37,7 +72,12 @@ impl CacheService {
                 "Initializing Redis cache backend with url: {}",
                 sanitize_redis_url(url)
             );
-            let cfg = RedisConfig::from_url(url);
+            let mut cfg = RedisConfig::from_url(url);
+            let mut pool_cfg = deadpool_redis::PoolConfig::new(4);
+            pool_cfg.timeouts.wait = Some(Duration::from_secs(3));
+            pool_cfg.timeouts.recycle = Some(Duration::from_secs(2));
+            cfg.pool = Some(pool_cfg);
+
             match cfg.create_pool(Some(Runtime::Tokio1)) {
                 Ok(pool) => CacheBackend::Redis(pool),
                 Err(err) => {
@@ -112,7 +152,7 @@ impl CacheService {
             return None;
         }
 
-        match &self.backend {
+        let raw = match &self.backend {
             CacheBackend::InMemory(cache) => {
                 let bytes = cache.get(key).await;
                 if bytes.is_some() {
@@ -144,7 +184,9 @@ impl CacheService {
                     }
                 }
             }
-        }
+        };
+
+        raw.map(decompress_payload)
     }
 
     pub async fn set(&self, key: &str, value: Vec<u8>) {
@@ -152,11 +194,12 @@ impl CacheService {
             return;
         }
 
-        debug!("[CACHE SET] {key} ({} bytes)", value.len());
+        let compressed = compress_payload(value);
+        debug!("[CACHE SET] {key} ({} bytes payload)", compressed.len());
 
         match &self.backend {
             CacheBackend::InMemory(cache) => {
-                cache.insert(key.to_string(), value).await;
+                cache.insert(key.to_string(), compressed).await;
             }
             CacheBackend::Redis(pool) => {
                 let mut conn = match pool.get().await {
@@ -169,7 +212,7 @@ impl CacheService {
 
                 let redis_key = format!("{}{}", self.prefix, key);
                 let ttl_secs = self.ttl.as_secs();
-                let res: Result<(), _> = conn.set_ex(&redis_key, value, ttl_secs).await;
+                let res: Result<(), _> = conn.set_ex(&redis_key, compressed, ttl_secs).await;
                 if let Err(err) = res {
                     warn!("Redis SETEX error: {err}");
                 }
@@ -210,5 +253,39 @@ mod tests {
         let cache = CacheService::new(10_000, 1, None).unwrap();
         cache.set("https://example.com/random", vec![1, 2, 3]).await;
         assert!(cache.get("https://example.com/random").await.is_none());
+    }
+
+    #[test]
+    fn test_payload_compression_round_trip() {
+        let large_html = "<html><body>".repeat(100)
+            + "<div class='content'>sample video text</div>"
+            + &"</body></html>".repeat(100);
+        let original_bytes = large_html.into_bytes();
+        let original_len = original_bytes.len();
+
+        let compressed = compress_payload(original_bytes.clone());
+        assert!(
+            compressed.len() < original_len / 5,
+            "Compression should reduce HTML size by at least 80%"
+        );
+        assert_eq!(compressed[0], 0x1f);
+        assert_eq!(compressed[1], 0x8b);
+
+        let decompressed = decompress_payload(compressed);
+        assert_eq!(decompressed, original_bytes);
+    }
+
+    #[test]
+    fn test_backward_compatibility_uncompressed_read() {
+        let raw_legacy_data = b"Legacy uncompressed HTML payload from earlier version".to_vec();
+        let result = decompress_payload(raw_legacy_data.clone());
+        assert_eq!(result, raw_legacy_data);
+    }
+
+    #[test]
+    fn test_small_payload_skips_compression() {
+        let small = vec![42u8; 100];
+        let processed = compress_payload(small.clone());
+        assert_eq!(processed, small, "Payloads <= 512 bytes should skip gzip");
     }
 }

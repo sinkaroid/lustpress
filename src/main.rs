@@ -8,6 +8,12 @@ use tower_http::cors::CorsLayer;
 use tracing::info;
 
 fn main() -> Result<(), Box<dyn Error>> {
+    // Disable Transparent Huge Pages (THP) on Linux to prevent 2MB memory lock-in
+    #[cfg(target_os = "linux")]
+    unsafe {
+        libc::prctl(libc::PR_SET_THP_DISABLE, 1, 0, 0, 0);
+    }
+
     let worker_threads = std::env::var("TOKIO_WORKER_THREADS")
         .ok()
         .and_then(|v| v.parse::<usize>().ok())
